@@ -1,0 +1,1066 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+
+    <meta charset="UTF-8">
+
+    <meta
+        name="viewport"
+        content="width=device-width, initial-scale=1.0"
+    >
+
+    <title>Settings | ServiceHub</title>
+
+    <!-- Bootstrap -->
+    <link
+        href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css"
+        rel="stylesheet"
+    >
+
+    <!-- Bootstrap Icons -->
+    <link
+        href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.css"
+        rel="stylesheet"
+    >
+
+    <!-- Shared Dashboard CSS -->
+    <link rel="stylesheet" href="./css/dashboard.css">
+
+    <!-- Settings CSS -->
+    <link rel="stylesheet" href="./css/settings.css">
+
+</head>
+
+<body>
+
+<div class="dashboard-shell">
+
+
+    <!-- MOBILE OVERLAY -->
+    <div
+        class="sidebar-overlay"
+        id="sidebarOverlay"
+    ></div>
+
+
+    <!-- =====================================================
+         SIDEBAR
+    ====================================================== -->
+    <aside
+        class="dashboard-sidebar"
+        id="dashboardSidebar"
+    >
+
+        <div class="sidebar-header">
+
+            <a
+                href="./dashboard.html"
+                class="sidebar-brand"
+            >
+                Service<span>Hub</span>
+            </a>
+
+            <button
+                type="button"
+                class="sidebar-close"
+                id="sidebarClose"
+            >
+                <i class="bi bi-x-lg"></i>
+            </button>
+
+        </div>
+
+
+        <div class="sidebar-user">
+
+            <div
+                class="sidebar-avatar"
+                id="sidebarAvatar"
+            >
+                <i class="bi bi-person"></i>
+            </div>
+
+            <div class="sidebar-user-info">
+
+                <strong id="sidebarUserName">
+                    Loading...
+                </strong>
+
+                <span id="sidebarUserType">
+                    Provider
+                </span>
+
+            </div>
+
+        </div>
+
+
+        <nav class="sidebar-nav">
+
+            <div class="nav-section-title">
+                Workspace
+            </div>
+
+
+            <a
+                href="./dashboard.html"
+                class="sidebar-nav-link"
+                data-page="dashboard"
+            >
+                <span class="nav-icon">
+                    <i class="bi bi-grid-1x2"></i>
+                </span>
+
+                <span>Dashboard</span>
+            </a>
+
+
+            <a
+                href="./profile.html"
+                class="sidebar-nav-link"
+                data-page="profile"
+            >
+                <span class="nav-icon">
+                    <i class="bi bi-person-badge"></i>
+                </span>
+
+                <span>My Profile</span>
+            </a>
+
+
+            <a
+                href="./services.html"
+                class="sidebar-nav-link"
+                data-page="services"
+            >
+                <span class="nav-icon">
+                    <i class="bi bi-tags"></i>
+                </span>
+
+                <span>Services</span>
+            </a>
+
+
+            <a
+                href="./work.html"
+                class="sidebar-nav-link"
+                data-page="work"
+            >
+                <span class="nav-icon">
+                    <i class="bi bi-images"></i>
+                </span>
+
+                <span>My Work</span>
+            </a>
+
+
+            <a
+                href="./reviews.html"
+                class="sidebar-nav-link"
+                data-page="reviews"
+            >
+                <span class="nav-icon">
+                    <i class="bi bi-star"></i>
+                </span>
+
+                <span>Reviews</span>
+            </a>
+
+
+            <a
+                href="./analytics.html"
+                class="sidebar-nav-link"
+                data-page="analytics"
+            >
+                <span class="nav-icon">
+                    <i class="bi bi-bar-chart"></i>
+                </span>
+
+                <span>Analytics</span>
+            </a>
+
+
+            <div class="nav-section-title">
+                Account
+            </div>
+
+
+            <a
+                href="./profile.html"
+                class="sidebar-nav-link"
+            >
+                <span class="nav-icon">
+                    <i class="bi bi-globe2"></i>
+                </span>
+
+                <span>Public Page</span>
+            </a>
+
+
+            <a
+                href="./settings.html"
+                class="sidebar-nav-link active"
+                data-page="settings"
+            >
+                <span class="nav-icon">
+                    <i class="bi bi-gear"></i>
+                </span>
+
+                <span>Settings</span>
+            </a>
+
+        </nav>
+
+
+        <div class="sidebar-footer">
+
+            <button
+                type="button"
+                class="logout-button"
+                id="logoutButton"
+            >
+                <i class="bi bi-box-arrow-right"></i>
+
+                <span>Logout</span>
+            </button>
+
+        </div>
+
+    </aside>
+
+
+    <!-- =====================================================
+         MAIN
+    ====================================================== -->
+    <main class="dashboard-main">
+
+
+        <!-- TOPBAR -->
+        <header class="dashboard-topbar">
+
+            <div class="topbar-left">
+
+                <button
+                    type="button"
+                    class="mobile-menu-button"
+                    id="mobileMenuButton"
+                >
+                    <i class="bi bi-list"></i>
+                </button>
+
+                <div>
+
+                    <div class="topbar-page-label">
+                        ACCOUNT
+                    </div>
+
+                    <h1>Settings</h1>
+
+                </div>
+
+            </div>
+
+
+            <div class="topbar-right">
+
+                <div class="system-status">
+
+                    <span class="status-dot"></span>
+
+                    <span>
+                        System Online
+                    </span>
+
+                </div>
+
+
+                <a
+                    href="./profile.html"
+                    class="topbar-profile"
+                >
+
+                    <div
+                        class="topbar-avatar"
+                        id="topbarAvatar"
+                    >
+                        <i class="bi bi-person"></i>
+                    </div>
+
+                    <span id="topbarUserName">
+                        Loading...
+                    </span>
+
+                    <i class="bi bi-chevron-down"></i>
+
+                </a>
+
+            </div>
+
+        </header>
+
+
+        <!-- =================================================
+             CONTENT
+        ================================================== -->
+        <div class="dashboard-content">
+
+            <div class="settings-page">
+
+
+                <!-- INTRO -->
+                <section class="settings-intro">
+
+                    <span class="settings-eyebrow">
+                        ACCOUNT
+                    </span>
+
+                    <h2>
+                        Settings
+                    </h2>
+
+                    <p>
+                        Manage your ServiceHub account,
+                        profile preferences and notifications.
+                    </p>
+
+                </section>
+
+
+                <!-- SETTINGS LAYOUT -->
+                <div class="settings-layout">
+
+
+                    <!-- SETTINGS MENU -->
+                    <aside class="settings-menu">
+
+                        <button
+                            type="button"
+                            class="settings-menu-item active"
+                            data-settings-section="account"
+                        >
+                            <i class="bi bi-person"></i>
+                            <span>Account</span>
+                        </button>
+
+
+                        <button
+                            type="button"
+                            class="settings-menu-item"
+                            data-settings-section="notifications"
+                        >
+                            <i class="bi bi-bell"></i>
+                            <span>Notifications</span>
+                        </button>
+
+
+                        <button
+                            type="button"
+                            class="settings-menu-item"
+                            data-settings-section="security"
+                        >
+                            <i class="bi bi-shield-lock"></i>
+                            <span>Security</span>
+                        </button>
+
+
+                        <button
+                            type="button"
+                            class="settings-menu-item"
+                            data-settings-section="danger"
+                        >
+                            <i class="bi bi-exclamation-triangle"></i>
+                            <span>Danger Zone</span>
+                        </button>
+
+                    </aside>
+
+
+                    <!-- SETTINGS CONTENT -->
+                    <div class="settings-content">
+
+
+                        <!-- ACCOUNT -->
+                        <section
+                            class="settings-section active"
+                            id="settingsAccount"
+                            data-settings-panel="account"
+                        >
+
+                            <div class="settings-card">
+
+                                <div class="settings-card-header">
+
+                                    <div>
+
+                                        <span class="card-eyebrow">
+                                            ACCOUNT
+                                        </span>
+
+                                        <h3>
+                                            Account Information
+                                        </h3>
+
+                                        <p>
+                                            Update the information associated
+                                            with your ServiceHub account.
+                                        </p>
+
+                                    </div>
+
+                                    <div class="settings-card-icon">
+                                        <i class="bi bi-person"></i>
+                                    </div>
+
+                                </div>
+
+
+                                <form id="accountSettingsForm">
+
+                                    <div class="settings-form-grid">
+
+
+                                        <div class="settings-form-group">
+
+                                            <label for="settingsFullName">
+                                                Full Name
+                                            </label>
+
+                                            <input
+                                                type="text"
+                                                class="form-control"
+                                                id="settingsFullName"
+                                                name="fullName"
+                                                placeholder="Your full name"
+                                            >
+
+                                        </div>
+
+
+                                        <div class="settings-form-group">
+
+                                            <label for="settingsEmail">
+                                                Email Address
+                                            </label>
+
+                                            <input
+                                                type="email"
+                                                class="form-control"
+                                                id="settingsEmail"
+                                                name="email"
+                                                placeholder="you@example.com"
+                                            >
+
+                                        </div>
+
+
+                                        <div class="settings-form-group">
+
+                                            <label for="settingsPhone">
+                                                Phone Number
+                                            </label>
+
+                                            <input
+                                                type="tel"
+                                                class="form-control"
+                                                id="settingsPhone"
+                                                name="phone"
+                                                placeholder="Phone number"
+                                            >
+
+                                        </div>
+
+
+                                        <div class="settings-form-group">
+
+                                            <label for="settingsUsername">
+                                                Username
+                                            </label>
+
+                                            <div class="settings-input-prefix">
+
+                                                <span>
+                                                    servicehub.com/
+                                                </span>
+
+                                                <input
+                                                    type="text"
+                                                    id="settingsUsername"
+                                                    name="username"
+                                                    placeholder="username"
+                                                >
+
+                                            </div>
+
+                                        </div>
+
+
+                                        <div class="settings-form-group full-width">
+
+                                            <label for="settingsLocation">
+                                                Location / Service Area
+                                            </label>
+
+                                            <input
+                                                type="text"
+                                                class="form-control"
+                                                id="settingsLocation"
+                                                name="location"
+                                                placeholder="Where you operate"
+                                            >
+
+                                        </div>
+
+                                    </div>
+
+
+                                    <div class="settings-form-actions">
+
+                                        <button
+                                            type="submit"
+                                            class="settings-primary-button"
+                                            id="saveAccountSettings"
+                                        >
+                                            <i class="bi bi-check2"></i>
+                                            Save Changes
+                                        </button>
+
+                                    </div>
+
+                                </form>
+
+                            </div>
+
+                        </section>
+
+
+                        <!-- NOTIFICATIONS -->
+                        <section
+                            class="settings-section"
+                            id="settingsNotifications"
+                            data-settings-panel="notifications"
+                        >
+
+                            <div class="settings-card">
+
+                                <div class="settings-card-header">
+
+                                    <div>
+
+                                        <span class="card-eyebrow">
+                                            NOTIFICATIONS
+                                        </span>
+
+                                        <h3>
+                                            Notification Preferences
+                                        </h3>
+
+                                        <p>
+                                            Choose which notifications
+                                            ServiceHub should send you.
+                                        </p>
+
+                                    </div>
+
+                                    <div class="settings-card-icon">
+                                        <i class="bi bi-bell"></i>
+                                    </div>
+
+                                </div>
+
+
+                                <div class="settings-options">
+
+
+                                    <label class="settings-toggle-row">
+
+                                        <div class="settings-option-icon">
+                                            <i class="bi bi-star"></i>
+                                        </div>
+
+                                        <div class="settings-option-text">
+
+                                            <strong>
+                                                New Reviews
+                                            </strong>
+
+                                            <span>
+                                                Get notified when a customer
+                                                leaves a review.
+                                            </span>
+
+                                        </div>
+
+                                        <input
+                                            type="checkbox"
+                                            id="notifyReviews"
+                                            checked
+                                        >
+
+                                        <span class="toggle-switch"></span>
+
+                                    </label>
+
+
+                                    <label class="settings-toggle-row">
+
+                                        <div class="settings-option-icon">
+                                            <i class="bi bi-chat-dots"></i>
+                                        </div>
+
+                                        <div class="settings-option-text">
+
+                                            <strong>
+                                                Service Requests
+                                            </strong>
+
+                                            <span>
+                                                Receive notifications about
+                                                new customer requests.
+                                            </span>
+
+                                        </div>
+
+                                        <input
+                                            type="checkbox"
+                                            id="notifyRequests"
+                                            checked
+                                        >
+
+                                        <span class="toggle-switch"></span>
+
+                                    </label>
+
+
+                                    <label class="settings-toggle-row">
+
+                                        <div class="settings-option-icon">
+                                            <i class="bi bi-bar-chart"></i>
+                                        </div>
+
+                                        <div class="settings-option-text">
+
+                                            <strong>
+                                                Weekly Analytics
+                                            </strong>
+
+                                            <span>
+                                                Receive a summary of your
+                                                profile performance.
+                                            </span>
+
+                                        </div>
+
+                                        <input
+                                            type="checkbox"
+                                            id="notifyAnalytics"
+                                            checked
+                                        >
+
+                                        <span class="toggle-switch"></span>
+
+                                    </label>
+
+
+                                    <label class="settings-toggle-row">
+
+                                        <div class="settings-option-icon">
+                                            <i class="bi bi-megaphone"></i>
+                                        </div>
+
+                                        <div class="settings-option-text">
+
+                                            <strong>
+                                                ServiceHub Updates
+                                            </strong>
+
+                                            <span>
+                                                Receive important product
+                                                and platform updates.
+                                            </span>
+
+                                        </div>
+
+                                        <input
+                                            type="checkbox"
+                                            id="notifyUpdates"
+                                            checked
+                                        >
+
+                                        <span class="toggle-switch"></span>
+
+                                    </label>
+
+                                </div>
+
+
+                                <div class="settings-form-actions">
+
+                                    <button
+                                        type="button"
+                                        class="settings-primary-button"
+                                        id="saveNotificationSettings"
+                                    >
+                                        <i class="bi bi-check2"></i>
+                                        Save Preferences
+                                    </button>
+
+                                </div>
+
+                            </div>
+
+                        </section>
+
+
+                        <!-- SECURITY -->
+                        <section
+                            class="settings-section"
+                            id="settingsSecurity"
+                            data-settings-panel="security"
+                        >
+
+                            <div class="settings-card">
+
+                                <div class="settings-card-header">
+
+                                    <div>
+
+                                        <span class="card-eyebrow">
+                                            SECURITY
+                                        </span>
+
+                                        <h3>
+                                            Password & Security
+                                        </h3>
+
+                                        <p>
+                                            Keep your ServiceHub account
+                                            secure by updating your password.
+                                        </p>
+
+                                    </div>
+
+                                    <div class="settings-card-icon">
+                                        <i class="bi bi-shield-lock"></i>
+                                    </div>
+
+                                </div>
+
+
+                                <form id="passwordSettingsForm">
+
+                                    <div class="settings-form-grid">
+
+
+                                        <div class="settings-form-group full-width">
+
+                                            <label for="currentPassword">
+                                                Current Password
+                                            </label>
+
+                                            <input
+                                                type="password"
+                                                class="form-control"
+                                                id="currentPassword"
+                                                name="currentPassword"
+                                                autocomplete="current-password"
+                                            >
+
+                                        </div>
+
+
+                                        <div class="settings-form-group">
+
+                                            <label for="newPassword">
+                                                New Password
+                                            </label>
+
+                                            <input
+                                                type="password"
+                                                class="form-control"
+                                                id="newPassword"
+                                                name="newPassword"
+                                                autocomplete="new-password"
+                                            >
+
+                                        </div>
+
+
+                                        <div class="settings-form-group">
+
+                                            <label for="confirmPassword">
+                                                Confirm New Password
+                                            </label>
+
+                                            <input
+                                                type="password"
+                                                class="form-control"
+                                                id="confirmPassword"
+                                                name="confirmPassword"
+                                                autocomplete="new-password"
+                                            >
+
+                                        </div>
+
+                                    </div>
+
+
+                                    <div class="password-note">
+
+                                        <i class="bi bi-info-circle"></i>
+
+                                        <span>
+                                            Use a strong password with a
+                                            combination of letters, numbers
+                                            and special characters.
+                                        </span>
+
+                                    </div>
+
+
+                                    <div class="settings-form-actions">
+
+                                        <button
+                                            type="submit"
+                                            class="settings-primary-button"
+                                            id="changePasswordButton"
+                                        >
+                                            <i class="bi bi-lock"></i>
+                                            Update Password
+                                        </button>
+
+                                    </div>
+
+                                </form>
+
+                            </div>
+
+                        </section>
+
+
+                        <!-- DANGER ZONE -->
+                        <section
+                            class="settings-section"
+                            id="settingsDanger"
+                            data-settings-panel="danger"
+                        >
+
+                            <div class="settings-card danger-card">
+
+                                <div class="settings-card-header">
+
+                                    <div>
+
+                                        <span class="card-eyebrow danger-eyebrow">
+                                            DANGER ZONE
+                                        </span>
+
+                                        <h3>
+                                            Account Actions
+                                        </h3>
+
+                                        <p>
+                                            These actions can affect your
+                                            ServiceHub account and data.
+                                        </p>
+
+                                    </div>
+
+                                    <div class="settings-card-icon danger-icon">
+                                        <i class="bi bi-exclamation-triangle"></i>
+                                    </div>
+
+                                </div>
+
+
+                                <div class="danger-action">
+
+                                    <div>
+
+                                        <strong>
+                                            Sign Out
+                                        </strong>
+
+                                        <span>
+                                            Sign out of your current
+                                            ServiceHub session.
+                                        </span>
+
+                                    </div>
+
+                                    <button
+                                        type="button"
+                                        class="settings-outline-button"
+                                        id="settingsLogoutButton"
+                                    >
+                                        Sign Out
+                                    </button>
+
+                                </div>
+
+
+                                <div class="danger-action">
+
+                                    <div>
+
+                                        <strong>
+                                            Delete Account
+                                        </strong>
+
+                                        <span>
+                                            Permanently delete your account
+                                            and associated ServiceHub data.
+                                        </span>
+
+                                    </div>
+
+                                    <button
+                                        type="button"
+                                        class="settings-danger-button"
+                                        id="deleteAccountButton"
+                                    >
+                                        Delete Account
+                                    </button>
+
+                                </div>
+
+                            </div>
+
+                        </section>
+
+                    </div>
+
+                </div>
+
+            </div>
+
+        </div>
+
+    </main>
+
+</div>
+
+
+<!-- =========================================================
+     SCRIPTS
+========================================================== -->
+
+<script src="./js/config.js"></script>
+<script src="./js/api.js"></script>
+<script src="./js/auth.js"></script>
+<script src="./js/app.js"></script>
+<script src="./js/settings.js"></script>
+
+<script
+    src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"
+></script>
+
+
+<script>
+document.addEventListener("DOMContentLoaded", function () {
+
+    const sidebar =
+        document.getElementById("dashboardSidebar");
+
+    const overlay =
+        document.getElementById("sidebarOverlay");
+
+    const mobileButton =
+        document.getElementById("mobileMenuButton");
+
+    const closeButton =
+        document.getElementById("sidebarClose");
+
+
+    function openSidebar() {
+
+        sidebar?.classList.add("open");
+        overlay?.classList.add("active");
+
+        document.body.classList.add("sidebar-open");
+
+    }
+
+
+    function closeSidebar() {
+
+        sidebar?.classList.remove("open");
+        overlay?.classList.remove("active");
+
+        document.body.classList.remove("sidebar-open");
+
+    }
+
+
+    mobileButton?.addEventListener(
+        "click",
+        openSidebar
+    );
+
+
+    closeButton?.addEventListener(
+        "click",
+        closeSidebar
+    );
+
+
+    overlay?.addEventListener(
+        "click",
+        closeSidebar
+    );
+
+
+    /* =====================================================
+       SETTINGS TABS
+    ====================================================== */
+
+    const menuItems =
+        document.querySelectorAll(
+            ".settings-menu-item"
+        );
+
+    const sections =
+        document.querySelectorAll(
+            ".settings-section"
+        );
+
+
+    menuItems.forEach(function (button) {
+
+        button.addEventListener("click", function () {
+
+            const target =
+                this.dataset.settingsSection;
+
+
+            menuItems.forEach(function (item) {
+                item.classList.remove("active");
+            });
+
+
+            sections.forEach(function (section) {
+                section.classList.remove("active");
+            });
+
+
+            this.classList.add("active");
+
+
+            const targetSection =
+                document.querySelector(
+                    `[data-settings-panel="${target}"]`
+                );
+
+
+            if (targetSection) {
+                targetSection.classList.add("active");
+            }
+
+        });
+
+    });
+
+});
+</script>
+
+</body>
+</html>

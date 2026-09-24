@@ -1,0 +1,424 @@
+/* =========================================================
+   SERVICEHUB - ANALYTICS PAGE
+   ========================================================= */
+
+.analytics-page {
+    animation: analyticsFadeIn 0.35s ease;
+}
+
+@keyframes analyticsFadeIn {
+    from {
+        opacity: 0;
+        transform: translateY(8px);
+    }
+
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+
+/* =========================================================
+   INTRO
+   ========================================================= */
+
+.analytics-intro {
+    display: flex;
+    align-items: flex-end;
+    justify-content: space-between;
+    gap: 25px;
+    margin-bottom: 24px;
+}
+
+.analytics-eyebrow,
+.card-eyebrow {
+    display: block;
+    color: #c6a15b;
+    font-size: 0.72rem;
+    font-weight: 700;
+    letter-spacing: 0.14em;
+    text-transform: uppercase;
+    margin-bottom: 7px;
+}
+
+.analytics-intro h2 {
+    color: #202020;
+    font-size: 1.65rem;
+    margin: 0 0 7px;
+    font-weight: 700;
+}
+
+.analytics-intro p {
+    color: #77736b;
+    margin: 0;
+    max-width: 650px;
+    line-height: 1.6;
+}
+
+.analytics-period {
+    min-width: 180px;
+}
+
+.analytics-period label {
+    display: block;
+    font-size: 0.75rem;
+    font-weight: 600;
+    color: #77736b;
+    margin-bottom: 6px;
+}
+
+.analytics-period select {
+    min-height: 43px;
+    border-radius: 9px;
+    border-color: #e6e0d5;
+}
+
+.analytics-period select:focus {
+    border-color: #c6a15b;
+    box-shadow: 0 0 0 3px rgba(198, 161, 91, 0.12);
+}
+
+
+/* =========================================================
+   STAT CARDS
+   ========================================================= */
+
+.analytics-stats {
+    display: grid;
+    grid-template-columns: repeat(4, minmax(0, 1fr));
+    gap: 16px;
+    margin-bottom: 20px;
+}
+
+.analytics-stat-card {
+    background: #ffffff;
+    border: 1px solid #e6e0d5;
+    border-radius: 15px;
+    padding: 19px;
+    display: flex;
+    align-items: center;
+    gap: 14px;
+    transition: 0.2s ease;
+}
+
+.analytics-stat-card:hover {
+    transform: translateY(-2px);
+    border-color: #d8c79f;
+    box-shadow: 0 10px 25px rgba(23, 23, 23, 0.06);
+}
+
+.analytics-stat-icon {
+    width: 46px;
+    height: 46px;
+    border-radius: 12px;
+    background: #f7f3eb;
+    color: #c6a15b;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 1.15rem;
+    flex-shrink: 0;
+}
+
+.analytics-stat-content {
+    min-width: 0;
+}
+
+.analytics-stat-content span {
+    display: block;
+    color: #77736b;
+    font-size: 0.78rem;
+    margin-bottom: 3px;
+}
+
+.analytics-stat-content strong {
+    display: block;
+    color: #202020;
+    font-size: 1.5rem;
+    line-height: 1.1;
+}
+
+.analytics-stat-content small {
+    display: block;
+    color: #198754;
+    margin-top: 4px;
+    font-size: 0.7rem;
+}
+
+
+/* =========================================================
+   ANALYTICS GRID
+   ========================================================= */
+
+.analytics-grid {
+    display: grid;
+    grid-template-columns: minmax(0, 1.7fr) minmax(300px, 1fr);
+    gap: 18px;
+    margin-bottom: 18px;
+}
+
+.analytics-grid-bottom {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+}
+
+.analytics-card {
+    background: #ffffff;
+    border: 1px solid #e6e0d5;
+    border-radius: 16px;
+    padding: 22px;
+}
+
+.analytics-card-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-start;
+    gap: 15px;
+    margin-bottom: 20px;
+}
+
+.analytics-card-header h3 {
+    margin: 0;
+    color: #202020;
+    font-size: 1rem;
+    font-weight: 700;
+}
+
+.analytics-total {
+    background: #f7f3eb;
+    color: #77736b;
+    padding: 6px 10px;
+    border-radius: 8px;
+    font-size: 0.72rem;
+}
+
+
+/* =========================================================
+   CHART
+   ========================================================= */
+
+.analytics-chart-wrapper {
+    width: 100%;
+    min-height: 270px;
+    position: relative;
+}
+
+#activityChart {
+    width: 100% !important;
+    height: 270px !important;
+}
+
+
+/* =========================================================
+   TRAFFIC SOURCES
+   ========================================================= */
+
+.traffic-source-list {
+    display: flex;
+    flex-direction: column;
+    gap: 17px;
+}
+
+.traffic-source-item {
+    display: grid;
+    grid-template-columns: 35px 1fr auto;
+    align-items: center;
+    gap: 10px;
+}
+
+.traffic-source-icon {
+    width: 34px;
+    height: 34px;
+    border-radius: 9px;
+    background: #f7f3eb;
+    color: #c6a15b;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.traffic-source-name {
+    font-size: 0.8rem;
+    font-weight: 600;
+    color: #202020;
+}
+
+.traffic-source-bar {
+    height: 6px;
+    background: #eee8dc;
+    border-radius: 999px;
+    margin-top: 6px;
+    overflow: hidden;
+}
+
+.traffic-source-fill {
+    height: 100%;
+    background: #c6a15b;
+    border-radius: inherit;
+    transition: width 0.5s ease;
+}
+
+.traffic-source-percent {
+    color: #77736b;
+    font-size: 0.76rem;
+}
+
+
+/* =========================================================
+   RANKING
+   ========================================================= */
+
+.analytics-ranking-list {
+    display: flex;
+    flex-direction: column;
+    gap: 13px;
+}
+
+.ranking-item {
+    display: grid;
+    grid-template-columns: 34px 1fr auto;
+    gap: 12px;
+    align-items: center;
+    padding: 10px 0;
+    border-bottom: 1px solid #eee8dc;
+}
+
+.ranking-item:last-child {
+    border-bottom: 0;
+}
+
+.ranking-number {
+    width: 30px;
+    height: 30px;
+    border-radius: 8px;
+    background: #f7f3eb;
+    color: #c6a15b;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 0.75rem;
+    font-weight: 800;
+}
+
+.ranking-name {
+    color: #202020;
+    font-size: 0.84rem;
+    font-weight: 600;
+}
+
+.ranking-meta {
+    color: #77736b;
+    font-size: 0.7rem;
+    margin-top: 2px;
+}
+
+.ranking-value {
+    color: #202020;
+    font-weight: 700;
+    font-size: 0.8rem;
+}
+
+
+/* =========================================================
+   ENGAGEMENT
+   ========================================================= */
+
+.analytics-summary-card {
+    margin-bottom: 20px;
+}
+
+.engagement-grid {
+    display: grid;
+    grid-template-columns: repeat(4, minmax(0, 1fr));
+    border-top: 1px solid #eee8dc;
+    border-bottom: 1px solid #eee8dc;
+}
+
+.engagement-item {
+    padding: 19px;
+    border-right: 1px solid #eee8dc;
+}
+
+.engagement-item:last-child {
+    border-right: 0;
+}
+
+.engagement-item span {
+    display: block;
+    color: #77736b;
+    font-size: 0.76rem;
+    margin-bottom: 7px;
+}
+
+.engagement-item strong {
+    color: #202020;
+    font-size: 1.35rem;
+}
+
+
+/* =========================================================
+   RESPONSIVE
+   ========================================================= */
+
+@media (max-width: 1050px) {
+
+    .analytics-stats {
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+    }
+
+    .analytics-grid {
+        grid-template-columns: 1fr;
+    }
+
+}
+
+@media (max-width: 700px) {
+
+    .analytics-intro {
+        flex-direction: column;
+        align-items: stretch;
+    }
+
+    .analytics-period {
+        width: 100%;
+    }
+
+    .analytics-stats {
+        grid-template-columns: 1fr;
+    }
+
+    .analytics-grid-bottom {
+        grid-template-columns: 1fr;
+    }
+
+    .engagement-grid {
+        grid-template-columns: repeat(2, 1fr);
+    }
+
+    .engagement-item:nth-child(2) {
+        border-right: 0;
+    }
+
+    .engagement-item:nth-child(1),
+    .engagement-item:nth-child(2) {
+        border-bottom: 1px solid #eee8dc;
+    }
+
+}
+
+@media (max-width: 450px) {
+
+    .engagement-grid {
+        grid-template-columns: 1fr;
+    }
+
+    .engagement-item {
+        border-right: 0;
+        border-bottom: 1px solid #eee8dc;
+    }
+
+    .engagement-item:last-child {
+        border-bottom: 0;
+    }
+
+}

@@ -1,0 +1,809 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+
+    <meta
+        name="viewport"
+        content="width=device-width, initial-scale=1.0"
+    >
+
+    <title>Services | ServiceHub</title>
+
+    <!-- Bootstrap -->
+    <link
+        href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css"
+        rel="stylesheet"
+    >
+
+    <!-- Bootstrap Icons -->
+    <link
+        rel="stylesheet"
+        href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css"
+    >
+
+    <!-- Main Dashboard CSS -->
+    <link
+        rel="stylesheet"
+        href="./css/dashboard.css"
+    >
+
+    <!-- Services CSS -->
+    <link
+        rel="stylesheet"
+        href="./css/services.css"
+    >
+</head>
+
+<body>
+
+    <!-- =====================================================
+         SIDEBAR OVERLAY
+    ====================================================== -->
+    <div
+        id="sidebarOverlay"
+        class="sidebar-overlay"
+    ></div>
+
+
+    <!-- =====================================================
+         SIDEBAR
+    ====================================================== -->
+    <aside
+        id="dashboardSidebar"
+        class="dashboard-sidebar"
+    >
+
+        <div class="sidebar-header">
+
+            <a
+                href="./dashboard.html"
+                class="sidebar-brand"
+            >
+                Service<span>Hub</span>
+            </a>
+
+            <button
+                type="button"
+                id="sidebarClose"
+                class="sidebar-close"
+                aria-label="Close menu"
+            >
+                <i class="bi bi-x-lg"></i>
+            </button>
+
+        </div>
+
+
+        <!-- USER -->
+        <div class="sidebar-user">
+
+            <div
+                id="sidebarAvatar"
+                class="sidebar-avatar"
+            >
+                <span id="sidebarAvatarInitials">SH</span>
+            </div>
+
+            <div class="sidebar-user-info">
+
+                <strong id="sidebarUserName">
+                    User
+                </strong>
+
+                <span id="sidebarUserType">
+                    Provider
+                </span>
+
+            </div>
+
+        </div>
+
+
+        <!-- NAVIGATION -->
+        <nav class="sidebar-nav">
+
+            <div class="nav-section-title">
+                Workspace
+            </div>
+
+
+            <a
+                href="./dashboard.html"
+                class="sidebar-nav-link"
+                data-page="dashboard"
+            >
+                <i class="bi bi-grid-1x2-fill"></i>
+                <span>Dashboard</span>
+            </a>
+
+
+            <a
+                href="./profile.html"
+                class="sidebar-nav-link"
+                data-page="profile"
+            >
+                <i class="bi bi-person-fill"></i>
+                <span>My Profile</span>
+            </a>
+
+
+            <a
+                href="./services.html"
+                class="sidebar-nav-link active"
+                data-page="services"
+            >
+                <i class="bi bi-briefcase-fill"></i>
+                <span>Services</span>
+            </a>
+
+
+            <a
+                href="./work.html"
+                class="sidebar-nav-link"
+                data-page="work"
+            >
+                <i class="bi bi-images"></i>
+                <span>My Work</span>
+            </a>
+
+
+            <a
+                href="./reviews.html"
+                class="sidebar-nav-link"
+                data-page="reviews"
+            >
+                <i class="bi bi-star-fill"></i>
+                <span>Reviews</span>
+            </a>
+
+
+            <a
+                href="./analytics.html"
+                class="sidebar-nav-link"
+                data-page="analytics"
+            >
+                <i class="bi bi-bar-chart-fill"></i>
+                <span>Analytics</span>
+            </a>
+
+
+            <div class="nav-section-title">
+                Account
+            </div>
+
+
+            <a
+                href="./profile.html"
+                class="sidebar-nav-link"
+            >
+                <i class="bi bi-globe2"></i>
+                <span>Public Profile</span>
+            </a>
+
+
+            <a
+                href="./settings.html"
+                class="sidebar-nav-link"
+            >
+                <i class="bi bi-gear-fill"></i>
+                <span>Settings</span>
+            </a>
+
+        </nav>
+
+
+        <!-- FOOTER -->
+        <div class="sidebar-footer">
+
+            <button
+                type="button"
+                id="logoutButton"
+                class="sidebar-logout"
+            >
+                <i class="bi bi-box-arrow-left"></i>
+                <span>Logout</span>
+            </button>
+
+        </div>
+
+    </aside>
+
+
+    <!-- =====================================================
+         MAIN
+    ====================================================== -->
+    <main class="dashboard-main">
+
+
+        <!-- =================================================
+             TOPBAR
+        ================================================== -->
+        <header class="dashboard-topbar">
+
+            <div class="topbar-left">
+
+                <button
+                    type="button"
+                    id="mobileMenuButton"
+                    class="mobile-menu-button"
+                    aria-label="Open menu"
+                >
+                    <i class="bi bi-list"></i>
+                </button>
+
+
+                <div class="topbar-heading">
+
+                    <div class="topbar-page-label">
+                        WORKSPACE
+                    </div>
+
+                    <h1>
+                        Services
+                    </h1>
+
+                </div>
+
+            </div>
+
+
+            <div class="topbar-right">
+
+                <div class="system-status">
+                    <span class="status-dot"></span>
+                    <span>System Online</span>
+                </div>
+
+
+                <a
+                    href="./profile.html"
+                    class="topbar-profile"
+                >
+
+                    <div
+                        id="topbarAvatar"
+                        class="topbar-avatar"
+                    >
+                        <span id="topbarAvatarInitials">SH</span>
+                    </div>
+
+                    <span id="topbarUserName">
+                        User
+                    </span>
+
+                    <i class="bi bi-chevron-down"></i>
+
+                </a>
+
+            </div>
+
+        </header>
+
+
+        <!-- =================================================
+             CONTENT
+        ================================================== -->
+        <div class="dashboard-content services-content">
+
+
+            <!-- ALERT -->
+            <div
+                id="servicesAlert"
+                class="dashboard-alert d-none"
+            ></div>
+
+
+            <!-- PAGE HERO -->
+            <section class="services-page-header">
+
+                <div class="services-header-copy">
+
+                    <div class="services-eyebrow">
+                        <i class="bi bi-briefcase-fill"></i>
+                        YOUR SERVICES
+                    </div>
+
+                    <h2>
+                        Manage Your Services
+                    </h2>
+
+                    <p>
+                        Add, edit and organize the professional services
+                        you offer to customers on ServiceHub.
+                    </p>
+
+                </div>
+
+
+                <button
+                    type="button"
+                    id="addServiceButton"
+                    class="btn-gold services-add-button"
+                >
+                    <i class="bi bi-plus-lg"></i>
+                    Add Service
+                </button>
+
+            </section>
+
+
+            <!-- =================================================
+                 STATS
+            ================================================== -->
+            <section class="services-stats-grid">
+
+                <div class="services-stat-card">
+
+                    <div class="services-stat-icon">
+                        <i class="bi bi-briefcase-fill"></i>
+                    </div>
+
+                    <div>
+                        <span>Total Services</span>
+                        <strong id="totalServices">
+                            0
+                        </strong>
+                    </div>
+
+                </div>
+
+
+                <div class="services-stat-card">
+
+                    <div class="services-stat-icon">
+                        <i class="bi bi-check-circle-fill"></i>
+                    </div>
+
+                    <div>
+                        <span>Active</span>
+                        <strong id="activeServices">
+                            0
+                        </strong>
+                    </div>
+
+                </div>
+
+
+                <div class="services-stat-card">
+
+                    <div class="services-stat-icon">
+                        <i class="bi bi-pause-circle-fill"></i>
+                    </div>
+
+                    <div>
+                        <span>Inactive</span>
+                        <strong id="inactiveServices">
+                            0
+                        </strong>
+                    </div>
+
+                </div>
+
+
+                <div class="services-stat-card">
+
+                    <div class="services-stat-icon">
+                        <i class="bi bi-currency-exchange"></i>
+                    </div>
+
+                    <div>
+                        <span>Average Price</span>
+                        <strong id="averageServicePrice">
+                            ₦0
+                        </strong>
+                    </div>
+
+                </div>
+
+            </section>
+
+
+            <!-- =================================================
+                 TOOLBAR
+            ================================================== -->
+            <section class="services-toolbar-card">
+
+                <div class="services-search">
+
+                    <i class="bi bi-search"></i>
+
+                    <input
+                        type="search"
+                        id="serviceSearch"
+                        placeholder="Search your services..."
+                        autocomplete="off"
+                    >
+
+                </div>
+
+
+                <div class="services-filter">
+
+                    <label for="serviceStatusFilter">
+                        Status
+                    </label>
+
+                    <select id="serviceStatusFilter">
+
+                        <option value="all">
+                            All Services
+                        </option>
+
+                        <option value="active">
+                            Active
+                        </option>
+
+                        <option value="inactive">
+                            Inactive
+                        </option>
+
+                    </select>
+
+                </div>
+
+            </section>
+
+
+            <!-- =================================================
+                 SERVICES GRID
+            ================================================== -->
+            <section>
+
+                <div
+                    id="servicesGrid"
+                    class="services-grid"
+                ></div>
+
+
+                <div
+                    id="servicesEmpty"
+                    class="services-empty d-none"
+                >
+
+                    <div class="services-empty-icon">
+                        <i class="bi bi-briefcase"></i>
+                    </div>
+
+                    <h3>
+                        No Services Yet
+                    </h3>
+
+                    <p>
+                        Start by adding the services you provide.
+                        Customers will be able to discover them
+                        from your profile.
+                    </p>
+
+                    <button
+                        type="button"
+                        id="emptyAddServiceButton"
+                        class="btn-gold"
+                    >
+                        <i class="bi bi-plus-lg"></i>
+                        Add Your First Service
+                    </button>
+
+                </div>
+
+
+                <div
+                    id="servicesNoResults"
+                    class="services-empty d-none"
+                >
+
+                    <div class="services-empty-icon">
+                        <i class="bi bi-search"></i>
+                    </div>
+
+                    <h3>
+                        No Matching Services
+                    </h3>
+
+                    <p>
+                        Try changing your search or status filter.
+                    </p>
+
+                </div>
+
+            </section>
+
+        </div>
+
+    </main>
+
+
+    <!-- =====================================================
+         SERVICE MODAL
+    ====================================================== -->
+    <div
+        id="serviceModal"
+        class="service-modal"
+        aria-hidden="true"
+    >
+
+        <div class="service-modal-backdrop"></div>
+
+
+        <div
+            class="service-modal-dialog"
+            role="dialog"
+            aria-modal="true"
+            aria-labelledby="serviceModalTitle"
+        >
+
+            <div class="service-modal-header">
+
+                <div>
+
+                    <span class="service-modal-eyebrow">
+                        SERVICE MANAGEMENT
+                    </span>
+
+                    <h2 id="serviceModalTitle">
+                        Add Service
+                    </h2>
+
+                </div>
+
+                <button
+                    type="button"
+                    id="closeServiceModal"
+                    class="service-modal-close"
+                    aria-label="Close"
+                >
+                    <i class="bi bi-x-lg"></i>
+                </button>
+
+            </div>
+
+
+            <form id="serviceForm">
+
+                <input
+                    type="hidden"
+                    id="serviceId"
+                >
+
+
+                <div class="service-form-body">
+
+                    <div class="service-form-group">
+
+                        <label for="serviceName">
+                            Service Name
+                            <span>*</span>
+                        </label>
+
+                        <input
+                            type="text"
+                            id="serviceName"
+                            placeholder="e.g. Logo Design"
+                            maxlength="120"
+                            required
+                        >
+
+                    </div>
+
+
+                    <div class="service-form-row">
+
+                        <div class="service-form-group">
+
+                            <label for="serviceCategory">
+                                Category
+                            </label>
+
+                            <select id="serviceCategory">
+
+                                <option value="">
+                                    Select category
+                                </option>
+
+                                <option value="Design">
+                                    Design
+                                </option>
+
+                                <option value="Development">
+                                    Development
+                                </option>
+
+                                <option value="Photography">
+                                    Photography
+                                </option>
+
+                                <option value="Marketing">
+                                    Marketing
+                                </option>
+
+                                <option value="Writing">
+                                    Writing
+                                </option>
+
+                                <option value="Business">
+                                    Business
+                                </option>
+
+                                <option value="Consulting">
+                                    Consulting
+                                </option>
+
+                                <option value="Other">
+                                    Other
+                                </option>
+
+                            </select>
+
+                        </div>
+
+
+                        <div class="service-form-group">
+
+                            <label for="serviceDuration">
+                                Estimated Duration
+                            </label>
+
+                            <input
+                                type="text"
+                                id="serviceDuration"
+                                placeholder="e.g. 2 - 3 days"
+                                maxlength="60"
+                            >
+
+                        </div>
+
+                    </div>
+
+
+                    <div class="service-form-group">
+
+                        <label for="serviceDescription">
+                            Description
+                            <span>*</span>
+                        </label>
+
+                        <textarea
+                            id="serviceDescription"
+                            rows="5"
+                            maxlength="1000"
+                            placeholder="Describe what customers will receive..."
+                            required
+                        ></textarea>
+
+                        <div class="service-character-count">
+                            <span id="serviceDescriptionCount">0</span>/1000
+                        </div>
+
+                    </div>
+
+
+                    <div class="service-form-row">
+
+                        <div class="service-form-group">
+
+                            <label for="servicePrice">
+                                Price
+                            </label>
+
+                            <div class="service-price-input">
+
+                                <span>₦</span>
+
+                                <input
+                                    type="number"
+                                    id="servicePrice"
+                                    min="0"
+                                    step="0.01"
+                                    placeholder="0"
+                                >
+
+                            </div>
+
+                        </div>
+
+
+                        <div class="service-form-group">
+
+                            <label for="servicePricingType">
+                                Pricing Type
+                            </label>
+
+                            <select id="servicePricingType">
+
+                                <option value="fixed">
+                                    Fixed Price
+                                </option>
+
+                                <option value="starting">
+                                    Starting From
+                                </option>
+
+                                <option value="negotiable">
+                                    Negotiable
+                                </option>
+
+                                <option value="contact">
+                                    Contact for Price
+                                </option>
+
+                            </select>
+
+                        </div>
+
+                    </div>
+
+
+                    <div class="service-status-control">
+
+                        <div class="service-status-copy">
+
+                            <strong>
+                                Service Status
+                            </strong>
+
+                            <span>
+                                Active services are visible to customers.
+                            </span>
+
+                        </div>
+
+
+                        <label class="service-switch">
+
+                            <input
+                                type="checkbox"
+                                id="serviceActive"
+                                checked
+                            >
+
+                            <span></span>
+
+                        </label>
+
+                    </div>
+
+                </div>
+
+
+                <div class="service-modal-footer">
+
+                    <button
+                        type="button"
+                        id="cancelServiceButton"
+                        class="btn-outline-dark-custom"
+                    >
+                        Cancel
+                    </button>
+
+                    <button
+                        type="submit"
+                        id="saveServiceButton"
+                        class="btn-gold"
+                    >
+                        <i class="bi bi-check-lg"></i>
+                        Save Service
+                    </button>
+
+                </div>
+
+            </form>
+
+        </div>
+
+    </div>
+
+
+    <!-- =====================================================
+         SCRIPTS
+    ====================================================== -->
+    <script src="./js/config.js"></script>
+    <script src="./js/api.js"></script>
+    <script src="./js/auth.js"></script>
+    <script src="./js/app.js"></script>
+
+    <script src="./js/services.js"></script>
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
+
+</body>
+</html>

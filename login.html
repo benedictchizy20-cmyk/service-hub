@@ -1,0 +1,400 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+
+    <meta charset="UTF-8">
+
+    <meta
+        name="viewport"
+        content="width=device-width, initial-scale=1.0"
+    >
+
+    <title>Login | ServiceHub</title>
+
+    <!-- Bootstrap -->
+    <link
+        href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css"
+        rel="stylesheet"
+    >
+
+    <!-- Bootstrap Icons -->
+    <link
+        rel="stylesheet"
+        href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css"
+    >
+
+    <!-- Main CSS -->
+    <link
+        rel="stylesheet"
+        href="./css/style.css"
+    >
+
+    <!-- Authentication CSS -->
+    <link
+        rel="stylesheet"
+        href="./css/auth.css"
+    >
+
+</head>
+
+
+<body>
+
+
+<!-- =====================================================
+     NAVBAR
+===================================================== -->
+
+<nav class="auth-navbar">
+
+    <div class="auth-navbar-container">
+
+        <a
+            href="./index.html"
+            class="auth-brand"
+        >
+            Service<span>Hub</span>
+        </a>
+
+
+        <div class="auth-nav-right">
+
+            <span class="auth-nav-text">
+                Don't have an account?
+            </span>
+
+            <a
+                href="./register.html"
+                class="auth-nav-link"
+            >
+                Create Profile
+            </a>
+
+        </div>
+
+    </div>
+
+</nav>
+
+
+<!-- =====================================================
+     AUTH PAGE
+===================================================== -->
+
+<main class="auth-page">
+
+
+    <!-- =================================================
+         LEFT IMAGE
+    ================================================== -->
+
+    <section class="auth-visual">
+
+        <div class="auth-visual-content">
+
+            <div class="auth-eyebrow">
+                Your work. Your reputation. Your business.
+            </div>
+
+
+            <h1>
+                Build a presence
+                <span>people remember.</span>
+            </h1>
+
+
+            <p class="auth-visual-description">
+
+                ServiceHub gives professionals one place to
+                showcase their services, prices, completed work
+                and customer reviews.
+
+            </p>
+
+        </div>
+
+
+        <div class="auth-visual-bottom">
+
+            <div class="auth-stat">
+
+                <strong>
+                    Portfolio
+                </strong>
+
+                <span>
+                    Showcase your work
+                </span>
+
+            </div>
+
+
+            <div class="auth-stat">
+
+                <strong>
+                    Services
+                </strong>
+
+                <span>
+                    Display your prices
+                </span>
+
+            </div>
+
+
+            <div class="auth-stat">
+
+                <strong>
+                    Reviews
+                </strong>
+
+                <span>
+                    Build trust
+                </span>
+
+            </div>
+
+        </div>
+
+    </section>
+
+
+    <!-- =================================================
+         RIGHT LOGIN FORM
+    ================================================== -->
+
+    <section class="auth-form-panel">
+
+        <div class="auth-form-container">
+
+
+            <div class="auth-form-header">
+
+                <div class="auth-form-label">
+                    Welcome Back
+                </div>
+
+                <h2>
+                    Sign in
+                </h2>
+
+                <p>
+                    Sign in to manage your profile, services
+                    and professional work.
+                </p>
+
+            </div>
+
+
+            <!-- ALERT -->
+
+            <div
+                id="authAlert"
+                class="auth-alert"
+            ></div>
+
+
+            <!-- LOGIN FORM -->
+
+            <form
+                id="loginForm"
+                novalidate
+            >
+
+
+                <!-- EMAIL -->
+
+                <div class="auth-form-group">
+
+                    <label for="email">
+                        Email Address
+                    </label>
+
+                    <input
+                        type="email"
+                        id="email"
+                        name="email"
+                        placeholder="you@example.com"
+                        autocomplete="email"
+                        required
+                    >
+
+                </div>
+
+
+                <!-- PASSWORD -->
+
+                <div class="auth-form-group">
+
+                    <label for="password">
+                        Password
+                    </label>
+
+                    <div class="auth-password-wrapper">
+
+                        <input
+                            type="password"
+                            id="password"
+                            name="password"
+                            placeholder="Enter your password"
+                            autocomplete="current-password"
+                            required
+                        >
+
+                        <button
+                            type="button"
+                            class="auth-password-toggle"
+                            id="togglePassword"
+                            aria-label="Show password"
+                        >
+                            <i class="bi bi-eye"></i>
+                        </button>
+
+                    </div>
+
+                </div>
+
+
+                <!-- OPTIONS -->
+
+                <div class="auth-options">
+
+                    <label class="auth-checkbox">
+
+                        <input
+                            type="checkbox"
+                            id="rememberMe"
+                        >
+
+                        <span>
+                            Remember me
+                        </span>
+
+                    </label>
+
+
+                    <a
+                        href="#"
+                        class="auth-forgot"
+                        onclick="return false;"
+                    >
+                        Forgot password?
+                    </a>
+
+                </div>
+
+
+                <!-- SUBMIT -->
+
+                <button
+                    type="submit"
+                    class="auth-submit"
+                    id="loginButton"
+                >
+                    Sign In
+                </button>
+
+
+            </form>
+
+
+            <div class="auth-divider">
+                or
+            </div>
+
+
+            <div class="auth-bottom-text">
+
+                Don't have a ServiceHub profile?
+
+                <a href="./register.html">
+                    Create one
+                </a>
+
+            </div>
+
+
+        </div>
+
+    </section>
+
+
+</main>
+
+
+<!-- =====================================================
+     JAVASCRIPT
+===================================================== -->
+
+<script src="./js/config.js"></script>
+
+<script src="./js/api.js"></script>
+
+<script src="./js/auth.js"></script>
+
+<script src="./js/app.js"></script>
+
+
+<!-- PASSWORD TOGGLE -->
+
+<script>
+
+document.addEventListener("DOMContentLoaded", function () {
+
+    const passwordInput =
+        document.getElementById("password");
+
+    const togglePassword =
+        document.getElementById("togglePassword");
+
+
+    if (!passwordInput || !togglePassword) {
+        return;
+    }
+
+
+    togglePassword.addEventListener("click", function () {
+
+        const icon =
+            togglePassword.querySelector("i");
+
+
+        if (passwordInput.type === "password") {
+
+            passwordInput.type = "text";
+
+            icon.classList.remove("bi-eye");
+
+            icon.classList.add("bi-eye-slash");
+
+            togglePassword.setAttribute(
+                "aria-label",
+                "Hide password"
+            );
+
+        } else {
+
+            passwordInput.type = "password";
+
+            icon.classList.remove("bi-eye-slash");
+
+            icon.classList.add("bi-eye");
+
+            togglePassword.setAttribute(
+                "aria-label",
+                "Show password"
+            );
+
+        }
+
+    });
+
+});
+
+</script>
+
+
+</body>
+
+</html>

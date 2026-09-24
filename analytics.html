@@ -1,0 +1,938 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+
+    <meta charset="UTF-8">
+
+    <meta
+        name="viewport"
+        content="width=device-width, initial-scale=1.0"
+    >
+
+    <title>Analytics | ServiceHub</title>
+
+    <!-- Bootstrap -->
+    <link
+        href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css"
+        rel="stylesheet"
+    >
+
+    <!-- Bootstrap Icons -->
+    <link
+        href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.css"
+        rel="stylesheet"
+    >
+
+    <!-- Shared Dashboard CSS -->
+    <link rel="stylesheet" href="./css/dashboard.css">
+
+    <!-- Analytics CSS -->
+    <link rel="stylesheet" href="./css/analytics.css">
+
+</head>
+
+<body>
+
+<div class="dashboard-shell">
+
+
+    <!-- MOBILE OVERLAY -->
+    <div
+        class="sidebar-overlay"
+        id="sidebarOverlay"
+    ></div>
+
+
+    <!-- =====================================================
+         SIDEBAR
+    ====================================================== -->
+    <aside
+        class="dashboard-sidebar"
+        id="dashboardSidebar"
+    >
+
+        <div class="sidebar-header">
+
+            <a
+                href="./dashboard.html"
+                class="sidebar-brand"
+            >
+                Service<span>Hub</span>
+            </a>
+
+            <button
+                type="button"
+                class="sidebar-close"
+                id="sidebarClose"
+            >
+                <i class="bi bi-x-lg"></i>
+            </button>
+
+        </div>
+
+
+        <div class="sidebar-user">
+
+            <div
+                class="sidebar-avatar"
+                id="sidebarAvatar"
+            >
+                <i class="bi bi-person"></i>
+            </div>
+
+            <div class="sidebar-user-info">
+
+                <strong id="sidebarUserName">
+                    Loading...
+                </strong>
+
+                <span id="sidebarUserType">
+                    Provider
+                </span>
+
+            </div>
+
+        </div>
+
+
+        <nav class="sidebar-nav">
+
+            <div class="nav-section-title">
+                Workspace
+            </div>
+
+
+            <a
+                href="./dashboard.html"
+                class="sidebar-nav-link"
+                data-page="dashboard"
+            >
+                <span class="nav-icon">
+                    <i class="bi bi-grid-1x2"></i>
+                </span>
+
+                <span>Dashboard</span>
+            </a>
+
+
+            <a
+                href="./profile.html"
+                class="sidebar-nav-link"
+                data-page="profile"
+            >
+                <span class="nav-icon">
+                    <i class="bi bi-person-badge"></i>
+                </span>
+
+                <span>My Profile</span>
+            </a>
+
+
+            <a
+                href="./services.html"
+                class="sidebar-nav-link"
+                data-page="services"
+            >
+                <span class="nav-icon">
+                    <i class="bi bi-tags"></i>
+                </span>
+
+                <span>Services</span>
+            </a>
+
+
+            <a
+                href="./work.html"
+                class="sidebar-nav-link"
+                data-page="work"
+            >
+                <span class="nav-icon">
+                    <i class="bi bi-images"></i>
+                </span>
+
+                <span>My Work</span>
+            </a>
+
+
+            <a
+                href="./reviews.html"
+                class="sidebar-nav-link"
+                data-page="reviews"
+            >
+                <span class="nav-icon">
+                    <i class="bi bi-star"></i>
+                </span>
+
+                <span>Reviews</span>
+            </a>
+
+
+            <a
+                href="./analytics.html"
+                class="sidebar-nav-link active"
+                data-page="analytics"
+            >
+                <span class="nav-icon">
+                    <i class="bi bi-bar-chart"></i>
+                </span>
+
+                <span>Analytics</span>
+            </a>
+
+
+            <div class="nav-section-title">
+                Account
+            </div>
+
+
+            <a
+                href="./profile.html"
+                class="sidebar-nav-link"
+            >
+                <span class="nav-icon">
+                    <i class="bi bi-globe2"></i>
+                </span>
+
+                <span>Public Page</span>
+            </a>
+
+
+            <a
+                href="./settings.html"
+                class="sidebar-nav-link"
+                data-page="settings"
+            >
+                <span class="nav-icon">
+                    <i class="bi bi-gear"></i>
+                </span>
+
+                <span>Settings</span>
+            </a>
+
+        </nav>
+
+
+        <div class="sidebar-footer">
+
+            <button
+                type="button"
+                class="logout-button"
+                id="logoutButton"
+            >
+                <i class="bi bi-box-arrow-right"></i>
+
+                <span>Logout</span>
+            </button>
+
+        </div>
+
+    </aside>
+
+
+    <!-- =====================================================
+         MAIN
+    ====================================================== -->
+    <main class="dashboard-main">
+
+
+        <!-- TOPBAR -->
+        <header class="dashboard-topbar">
+
+            <div class="topbar-left">
+
+                <button
+                    type="button"
+                    class="mobile-menu-button"
+                    id="mobileMenuButton"
+                >
+                    <i class="bi bi-list"></i>
+                </button>
+
+                <div>
+
+                    <div class="topbar-page-label">
+                        WORKSPACE
+                    </div>
+
+                    <h1>Analytics</h1>
+
+                </div>
+
+            </div>
+
+
+            <div class="topbar-right">
+
+                <div class="system-status">
+
+                    <span class="status-dot"></span>
+
+                    <span>
+                        System Online
+                    </span>
+
+                </div>
+
+
+                <a
+                    href="./profile.html"
+                    class="topbar-profile"
+                >
+
+                    <div
+                        class="topbar-avatar"
+                        id="topbarAvatar"
+                    >
+                        <i class="bi bi-person"></i>
+                    </div>
+
+                    <span id="topbarUserName">
+                        Loading...
+                    </span>
+
+                    <i class="bi bi-chevron-down"></i>
+
+                </a>
+
+            </div>
+
+        </header>
+
+
+        <!-- =================================================
+             CONTENT
+        ================================================== -->
+        <div class="dashboard-content">
+
+            <div class="analytics-page">
+
+
+                <!-- INTRO -->
+                <section class="analytics-intro">
+
+                    <div>
+
+                        <span class="analytics-eyebrow">
+                            PERFORMANCE
+                        </span>
+
+                        <h2>
+                            Analytics
+                        </h2>
+
+                        <p>
+                            Understand how customers discover,
+                            view and interact with your ServiceHub profile.
+                        </p>
+
+                    </div>
+
+
+                    <div class="analytics-period">
+
+                        <label for="analyticsPeriod">
+                            Time Period
+                        </label>
+
+                        <select
+                            id="analyticsPeriod"
+                            class="form-select"
+                        >
+
+                            <option value="7">
+                                Last 7 Days
+                            </option>
+
+                            <option value="30" selected>
+                                Last 30 Days
+                            </option>
+
+                            <option value="90">
+                                Last 90 Days
+                            </option>
+
+                            <option value="365">
+                                Last Year
+                            </option>
+
+                        </select>
+
+                    </div>
+
+                </section>
+
+
+                <!-- STATS -->
+                <section class="analytics-stats">
+
+                    <div class="analytics-stat-card">
+
+                        <div class="analytics-stat-icon">
+                            <i class="bi bi-eye"></i>
+                        </div>
+
+                        <div class="analytics-stat-content">
+
+                            <span>
+                                Profile Views
+                            </span>
+
+                            <strong id="profileViews">
+                                0
+                            </strong>
+
+                            <small id="profileViewsChange">
+                                --
+                            </small>
+
+                        </div>
+
+                    </div>
+
+
+                    <div class="analytics-stat-card">
+
+                        <div class="analytics-stat-icon">
+                            <i class="bi bi-telephone"></i>
+                        </div>
+
+                        <div class="analytics-stat-content">
+
+                            <span>
+                                Contact Clicks
+                            </span>
+
+                            <strong id="contactClicks">
+                                0
+                            </strong>
+
+                            <small id="contactClicksChange">
+                                --
+                            </small>
+
+                        </div>
+
+                    </div>
+
+
+                    <div class="analytics-stat-card">
+
+                        <div class="analytics-stat-icon">
+                            <i class="bi bi-chat-square-text"></i>
+                        </div>
+
+                        <div class="analytics-stat-content">
+
+                            <span>
+                                Service Requests
+                            </span>
+
+                            <strong id="serviceRequests">
+                                0
+                            </strong>
+
+                            <small id="serviceRequestsChange">
+                                --
+                            </small>
+
+                        </div>
+
+                    </div>
+
+
+                    <div class="analytics-stat-card">
+
+                        <div class="analytics-stat-icon">
+                            <i class="bi bi-star"></i>
+                        </div>
+
+                        <div class="analytics-stat-content">
+
+                            <span>
+                                Reviews
+                            </span>
+
+                            <strong id="analyticsReviews">
+                                0
+                            </strong>
+
+                            <small id="analyticsReviewsChange">
+                                --
+                            </small>
+
+                        </div>
+
+                    </div>
+
+                </section>
+
+
+                <!-- MAIN GRID -->
+                <section class="analytics-grid">
+
+
+                    <!-- ACTIVITY -->
+                    <div class="analytics-card">
+
+                        <div class="analytics-card-header">
+
+                            <div>
+
+                                <span class="card-eyebrow">
+                                    ACTIVITY
+                                </span>
+
+                                <h3>
+                                    Profile Activity
+                                </h3>
+
+                            </div>
+
+                            <span
+                                class="analytics-total"
+                                id="activityTotal"
+                            >
+                                0 total
+                            </span>
+
+                        </div>
+
+
+                        <div class="analytics-chart-wrapper">
+
+                            <canvas
+                                id="activityChart"
+                            ></canvas>
+
+                        </div>
+
+                    </div>
+
+
+                    <!-- TRAFFIC -->
+                    <div class="analytics-card">
+
+                        <div class="analytics-card-header">
+
+                            <div>
+
+                                <span class="card-eyebrow">
+                                    DISCOVERY
+                                </span>
+
+                                <h3>
+                                    Traffic Sources
+                                </h3>
+
+                            </div>
+
+                        </div>
+
+
+                        <div
+                            class="traffic-source-list"
+                            id="trafficSourceList"
+                        >
+
+                            <div class="traffic-source-item">
+
+                                <div class="traffic-source-icon">
+                                    <i class="bi bi-google"></i>
+                                </div>
+
+                                <div>
+
+                                    <div class="traffic-source-name">
+                                        Search
+                                    </div>
+
+                                    <div class="traffic-source-bar">
+
+                                        <div
+                                            class="traffic-source-fill"
+                                            style="width: 0%;"
+                                        ></div>
+
+                                    </div>
+
+                                </div>
+
+                                <span class="traffic-source-percent">
+                                    0%
+                                </span>
+
+                            </div>
+
+
+                            <div class="traffic-source-item">
+
+                                <div class="traffic-source-icon">
+                                    <i class="bi bi-share"></i>
+                                </div>
+
+                                <div>
+
+                                    <div class="traffic-source-name">
+                                        Social Media
+                                    </div>
+
+                                    <div class="traffic-source-bar">
+
+                                        <div
+                                            class="traffic-source-fill"
+                                            style="width: 0%;"
+                                        ></div>
+
+                                    </div>
+
+                                </div>
+
+                                <span class="traffic-source-percent">
+                                    0%
+                                </span>
+
+                            </div>
+
+
+                            <div class="traffic-source-item">
+
+                                <div class="traffic-source-icon">
+                                    <i class="bi bi-link-45deg"></i>
+                                </div>
+
+                                <div>
+
+                                    <div class="traffic-source-name">
+                                        Direct Link
+                                    </div>
+
+                                    <div class="traffic-source-bar">
+
+                                        <div
+                                            class="traffic-source-fill"
+                                            style="width: 0%;"
+                                        ></div>
+
+                                    </div>
+
+                                </div>
+
+                                <span class="traffic-source-percent">
+                                    0%
+                                </span>
+
+                            </div>
+
+
+                            <div class="traffic-source-item">
+
+                                <div class="traffic-source-icon">
+                                    <i class="bi bi-grid"></i>
+                                </div>
+
+                                <div>
+
+                                    <div class="traffic-source-name">
+                                        ServiceHub
+                                    </div>
+
+                                    <div class="traffic-source-bar">
+
+                                        <div
+                                            class="traffic-source-fill"
+                                            style="width: 0%;"
+                                        ></div>
+
+                                    </div>
+
+                                </div>
+
+                                <span class="traffic-source-percent">
+                                    0%
+                                </span>
+
+                            </div>
+
+                        </div>
+
+                    </div>
+
+                </section>
+
+
+                <!-- BOTTOM GRID -->
+                <section class="analytics-grid analytics-grid-bottom">
+
+
+                    <!-- SERVICES -->
+                    <div class="analytics-card">
+
+                        <div class="analytics-card-header">
+
+                            <div>
+
+                                <span class="card-eyebrow">
+                                    SERVICES
+                                </span>
+
+                                <h3>
+                                    Top Performing Services
+                                </h3>
+
+                            </div>
+
+                        </div>
+
+
+                        <div
+                            class="analytics-ranking-list"
+                            id="servicesRanking"
+                        >
+
+                            <div class="ranking-item">
+
+                                <div class="ranking-number">
+                                    1
+                                </div>
+
+                                <div>
+
+                                    <div class="ranking-name">
+                                        No service data yet
+                                    </div>
+
+                                    <div class="ranking-meta">
+                                        Add services to see performance
+                                    </div>
+
+                                </div>
+
+                                <div class="ranking-value">
+                                    0
+                                </div>
+
+                            </div>
+
+                        </div>
+
+                    </div>
+
+
+                    <!-- WORK -->
+                    <div class="analytics-card">
+
+                        <div class="analytics-card-header">
+
+                            <div>
+
+                                <span class="card-eyebrow">
+                                    PORTFOLIO
+                                </span>
+
+                                <h3>
+                                    Most Viewed Work
+                                </h3>
+
+                            </div>
+
+                        </div>
+
+
+                        <div
+                            class="analytics-ranking-list"
+                            id="workRanking"
+                        >
+
+                            <div class="ranking-item">
+
+                                <div class="ranking-number">
+                                    1
+                                </div>
+
+                                <div>
+
+                                    <div class="ranking-name">
+                                        No work data yet
+                                    </div>
+
+                                    <div class="ranking-meta">
+                                        Add work to see performance
+                                    </div>
+
+                                </div>
+
+                                <div class="ranking-value">
+                                    0
+                                </div>
+
+                            </div>
+
+                        </div>
+
+                    </div>
+
+                </section>
+
+
+                <!-- ENGAGEMENT -->
+                <section class="analytics-card analytics-summary-card">
+
+                    <div class="analytics-card-header">
+
+                        <div>
+
+                            <span class="card-eyebrow">
+                                ENGAGEMENT
+                            </span>
+
+                            <h3>
+                                Customer Engagement
+                            </h3>
+
+                        </div>
+
+                    </div>
+
+
+                    <div class="engagement-grid">
+
+                        <div class="engagement-item">
+
+                            <span>
+                                Profile Conversion
+                            </span>
+
+                            <strong id="profileConversion">
+                                0%
+                            </strong>
+
+                        </div>
+
+
+                        <div class="engagement-item">
+
+                            <span>
+                                Contact Rate
+                            </span>
+
+                            <strong id="contactRate">
+                                0%
+                            </strong>
+
+                        </div>
+
+
+                        <div class="engagement-item">
+
+                            <span>
+                                Review Rate
+                            </span>
+
+                            <strong id="reviewRate">
+                                0%
+                            </strong>
+
+                        </div>
+
+
+                        <div class="engagement-item">
+
+                            <span>
+                                Returning Visitors
+                            </span>
+
+                            <strong id="returningVisitors">
+                                0%
+                            </strong>
+
+                        </div>
+
+                    </div>
+
+                </section>
+
+            </div>
+
+        </div>
+
+    </main>
+
+</div>
+
+
+<!-- SCRIPTS -->
+<script src="./js/config.js"></script>
+<script src="./js/api.js"></script>
+<script src="./js/auth.js"></script>
+<script src="./js/app.js"></script>
+
+<!-- Chart.js -->
+<script
+    src="https://cdn.jsdelivr.net/npm/chart.js@4.4.4/dist/chart.umd.min.js"
+></script>
+
+<script src="./js/analytics.js"></script>
+
+<script
+    src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"
+></script>
+
+
+<script>
+document.addEventListener("DOMContentLoaded", function () {
+
+    const sidebar =
+        document.getElementById("dashboardSidebar");
+
+    const overlay =
+        document.getElementById("sidebarOverlay");
+
+    const mobileButton =
+        document.getElementById("mobileMenuButton");
+
+    const closeButton =
+        document.getElementById("sidebarClose");
+
+
+    function openSidebar() {
+
+        sidebar?.classList.add("open");
+        overlay?.classList.add("active");
+
+        document.body.classList.add("sidebar-open");
+
+    }
+
+
+    function closeSidebar() {
+
+        sidebar?.classList.remove("open");
+        overlay?.classList.remove("active");
+
+        document.body.classList.remove("sidebar-open");
+
+    }
+
+
+    mobileButton?.addEventListener(
+        "click",
+        openSidebar
+    );
+
+
+    closeButton?.addEventListener(
+        "click",
+        closeSidebar
+    );
+
+
+    overlay?.addEventListener(
+        "click",
+        closeSidebar
+    );
+
+});
+</script>
+
+</body>
+</html>
