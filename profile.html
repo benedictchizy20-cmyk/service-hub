@@ -285,28 +285,51 @@
                         <!-- =================================================
                              PROFILE AVATAR
                         ================================================== -->
-                        <div
-                            id="profilePicture"
-                            class="profile-dashboard-avatar"
-                        >
+                       <!-- =================================================
+                        PROFILE AVATAR
+                         ================================================== -->
+      <div
+       id="profilePicture"
+       class="profile-dashboard-avatar profile-picture-upload-area"
+>
 
-                            <!-- Actual profile image -->
-                            <img
-                                id="profilePictureImage"
-                                src=""
-                                alt="Profile picture"
-                                class="profile-dashboard-avatar-image"
-                            >
+    <!-- Profile Image -->
+    <img
+        id="profilePictureImage"
+        src=""
+        alt="Profile picture"
+        class="profile-dashboard-avatar-image"
+        style="display: none;"
+    >
 
-                            <!-- Fallback initials -->
-                            <div
-                                id="profileInitials"
-                                class="profile-dashboard-initials"
-                            >
-                                SH
-                            </div>
+    <!-- Initials Fallback -->
+    <div
+        id="profileInitials"
+        class="profile-dashboard-initials"
+    >
+        SH
+    </div>
 
-                        </div>
+    <!-- Upload Overlay -->
+    <button
+        type="button"
+        id="changeProfilePictureButton"
+        class="profile-picture-change-button"
+        aria-label="Change profile picture"
+        title="Change profile picture"
+    >
+        <i class="bi bi-camera-fill"></i>
+    </button>
+
+    <!-- Hidden File Input -->
+    <input
+        type="file"
+        id="profilePictureInput"
+        accept="image/*"
+        style="display: none;"
+    >
+
+     </div>
 
 
 
@@ -1425,6 +1448,7 @@
 
     <!-- ServiceHub Profile -->
     <script src="./js/profile.js"></script>
+    <script src="./js/profile-picture.js"></script>
 
     <!-- Bootstrap JS -->
     <script

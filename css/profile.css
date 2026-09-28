@@ -4988,3 +4988,71 @@ body.profile-edit-open {
         min-height: 42px;
     }
 }
+/* =========================================================
+   PROFILE PICTURE UPLOAD
+========================================================= */
+
+.profile-picture-upload-area {
+    position: relative;
+    overflow: hidden;
+}
+
+/* Camera button */
+.profile-picture-change-button {
+    position: absolute;
+    right: 5px;
+    bottom: 5px;
+
+    width: 38px;
+    height: 38px;
+
+    border: 3px solid #ffffff;
+    border-radius: 50%;
+
+    background: #c6a15b;
+    color: #171717;
+
+    display: flex;
+    align-items: center;
+    justify-content: center;
+
+    cursor: pointer;
+
+    z-index: 10;
+
+    transition:
+        transform 0.2s ease,
+        background 0.2s ease,
+        box-shadow 0.2s ease;
+}
+
+.profile-picture-change-button:hover {
+    background: #171717;
+    color: #c6a15b;
+    transform: scale(1.08);
+
+    box-shadow:
+        0 5px 15px rgba(23, 23, 23, 0.25);
+}
+
+.profile-picture-change-button i {
+    font-size: 15px;
+}
+
+/* Make uploaded image fill avatar */
+.profile-dashboard-avatar-image {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    border-radius: 50%;
+}
+
+/* Mobile */
+@media (max-width: 650px) {
+
+    .profile-picture-change-button {
+        width: 35px;
+        height: 35px;
+    }
+
+}
