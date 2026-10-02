@@ -3,7 +3,7 @@
 /* =========================================================
    SERVICEHUB API
    =========================================================
-   FRONTEND DEVELOPMENT / MOCK BACKEND
+   FRONTEND DEVELOPMENT / REAL BACKEND
 
    IMPORTANT:
    - USE_MOCK_BACKEND = true
@@ -17,11 +17,14 @@
    - Provider data is stored in localStorage.
    - Current development session is stored in sessionStorage.
 
-   THIS MOCK SYSTEM IS NOT FOR PRODUCTION.
+   REAL BACKEND:
+   - Authentication uses HttpOnly cookies.
+   - Services use the real ServiceHub backend.
 ========================================================= */
 
 
 (function () {
+
 
     /* =====================================================
        BASIC HELPERS
@@ -86,19 +89,26 @@
     }
 
 
-    function getJSON(key, fallback) {
+    function getJSON(
+        key,
+        fallback
+    ) {
 
         try {
 
             const value =
                 localStorage.getItem(key);
 
+
             if (!value) {
 
                 return fallback;
             }
 
-            return JSON.parse(value);
+
+            return JSON.parse(
+                value
+            );
 
         } catch (error) {
 
@@ -112,7 +122,10 @@
     }
 
 
-    function setJSON(key, value) {
+    function setJSON(
+        key,
+        value
+    ) {
 
         try {
 
@@ -135,11 +148,15 @@
     }
 
 
-    function removeStorageItem(key) {
+    function removeStorageItem(
+        key
+    ) {
 
         try {
 
-            localStorage.removeItem(key);
+            localStorage.removeItem(
+                key
+            );
 
         } catch (error) {
 
@@ -151,7 +168,9 @@
     }
 
 
-    function normalizeEmail(email) {
+    function normalizeEmail(
+        email
+    ) {
 
         return String(
             email || ""
@@ -161,28 +180,47 @@
     }
 
 
-    function normalizeUsername(username) {
+    function normalizeUsername(
+        username
+    ) {
 
         return String(
             username || ""
         )
             .trim()
             .toLowerCase()
-            .replace(/^@/, "");
+            .replace(
+                /^@/,
+                ""
+            );
     }
 
 
-    function escapeUsernamePart(value) {
+    function escapeUsernamePart(
+        value
+    ) {
 
         return String(
             value || ""
         )
             .toLowerCase()
             .trim()
-            .replace(/[^a-z0-9\s-]/g, "")
-            .replace(/\s+/g, "-")
-            .replace(/-+/g, "-")
-            .replace(/^-|-$/g, "");
+            .replace(
+                /[^a-z0-9\s-]/g,
+                ""
+            )
+            .replace(
+                /\s+/g,
+                "-"
+            )
+            .replace(
+                /-+/g,
+                "-"
+            )
+            .replace(
+                /^-|-$/g,
+                ""
+            );
     }
 
 
@@ -190,10 +228,15 @@
        USERNAME
     ===================================================== */
 
-    function createUsername(fullName) {
+    function createUsername(
+        fullName
+    ) {
 
         let username =
-            escapeUsernamePart(fullName);
+            escapeUsernamePart(
+                fullName
+            );
+
 
         if (!username) {
 
@@ -201,6 +244,7 @@
                 "provider-" +
                 Date.now().toString(36);
         }
+
 
         return username;
     }
@@ -212,32 +256,44 @@
     ) {
 
         const base =
-            normalizeUsername(baseUsername) ||
+            normalizeUsername(
+                baseUsername
+            ) ||
             "provider";
 
-        let username = base;
 
-        let counter = 1;
+        let username =
+            base;
+
+
+        let counter =
+            1;
+
 
         while (
-            users.some(function (user) {
+            users.some(
+                function (user) {
 
-                return (
-                    normalizeUsername(
-                        user.username
-                    ) === username
-                );
+                    return (
+                        normalizeUsername(
+                            user.username
+                        ) ===
+                        username
+                    );
 
-            })
+                }
+            )
         ) {
 
             counter++;
+
 
             username =
                 base +
                 "-" +
                 counter;
         }
+
 
         return username;
     }
@@ -257,7 +313,8 @@
         isMockMode: function () {
 
             return (
-                getConfig().USE_MOCK_BACKEND === true
+                getConfig()
+                    .USE_MOCK_BACKEND === true
             );
         },
 
@@ -269,16 +326,20 @@
         getDevUsers: function () {
 
             return getJSON(
-                getConfig().DEV_USERS_KEY,
+                getConfig()
+                    .DEV_USERS_KEY,
                 []
             );
         },
 
 
-        saveDevUsers: function (users) {
+        saveDevUsers: function (
+            users
+        ) {
 
             return setJSON(
-                getConfig().DEV_USERS_KEY,
+                getConfig()
+                    .DEV_USERS_KEY,
                 users
             );
         },
@@ -291,16 +352,20 @@
         getDevData: function () {
 
             return getJSON(
-                getConfig().DEV_DATA_KEY,
+                getConfig()
+                    .DEV_DATA_KEY,
                 {}
             );
         },
 
 
-        saveDevData: function (data) {
+        saveDevData: function (
+            data
+        ) {
 
             return setJSON(
-                getConfig().DEV_DATA_KEY,
+                getConfig()
+                    .DEV_DATA_KEY,
                 data
             );
         },
@@ -310,14 +375,18 @@
            DEVELOPMENT SESSION
         ================================================= */
 
-        saveDevSession: function (userId) {
+        saveDevSession: function (
+            userId
+        ) {
 
             try {
 
                 sessionStorage.setItem(
-                    getConfig().DEV_SESSION_KEY,
+                    getConfig()
+                        .DEV_SESSION_KEY,
                     userId
                 );
+
 
                 return true;
 
@@ -338,7 +407,8 @@
             try {
 
                 return sessionStorage.getItem(
-                    getConfig().DEV_SESSION_KEY
+                    getConfig()
+                        .DEV_SESSION_KEY
                 );
 
             } catch (error) {
@@ -353,11 +423,14 @@
             try {
 
                 sessionStorage.removeItem(
-                    getConfig().DEV_SESSION_KEY
+                    getConfig()
+                        .DEV_SESSION_KEY
                 );
 
+
                 sessionStorage.removeItem(
-                    getConfig().USER_STORAGE_KEY
+                    getConfig()
+                        .USER_STORAGE_KEY
                 );
 
             } catch (error) {
@@ -374,14 +447,20 @@
            CURRENT USER SNAPSHOT
         ================================================= */
 
-        saveCurrentUserSnapshot: function (user) {
+        saveCurrentUserSnapshot: function (
+            user
+        ) {
 
             try {
 
                 sessionStorage.setItem(
-                    getConfig().USER_STORAGE_KEY,
-                    JSON.stringify(user)
+                    getConfig()
+                        .USER_STORAGE_KEY,
+                    JSON.stringify(
+                        user
+                    )
                 );
+
 
                 return true;
 
@@ -403,15 +482,20 @@
 
                 const value =
                     sessionStorage.getItem(
-                        getConfig().USER_STORAGE_KEY
+                        getConfig()
+                            .USER_STORAGE_KEY
                     );
+
 
                 if (!value) {
 
                     return null;
                 }
 
-                return JSON.parse(value);
+
+                return JSON.parse(
+                    value
+                );
 
             } catch (error) {
 
@@ -424,68 +508,96 @@
            FIND DEVELOPMENT USER
         ================================================= */
 
-        findDevUserById: function (userId) {
+        findDevUserById: function (
+            userId
+        ) {
 
             const users =
                 this.getDevUsers();
 
+
             return (
-                users.find(function (user) {
+                users.find(
+                    function (user) {
 
-                    return (
-                        user.id === userId
-                    );
+                        return (
+                            user.id ===
+                            userId
+                        );
 
-                }) || null
+                    }
+                ) ||
+                null
             );
         },
 
 
-        findDevUserByEmail: function (email) {
+        findDevUserByEmail: function (
+            email
+        ) {
 
             const normalized =
-                normalizeEmail(email);
+                normalizeEmail(
+                    email
+                );
+
 
             const users =
                 this.getDevUsers();
 
+
             return (
-                users.find(function (user) {
+                users.find(
+                    function (user) {
 
-                    return (
-                        normalizeEmail(
-                            user.email
-                        ) === normalized
-                    );
+                        return (
+                            normalizeEmail(
+                                user.email
+                            ) ===
+                            normalized
+                        );
 
-                }) || null
+                    }
+                ) ||
+                null
             );
         },
 
 
-        findDevUserByUsername: function (username) {
+        findDevUserByUsername: function (
+            username
+        ) {
 
             const normalized =
-                normalizeUsername(username);
+                normalizeUsername(
+                    username
+                );
+
 
             if (!normalized) {
 
                 return null;
             }
 
+
             const users =
                 this.getDevUsers();
 
+
             return (
-                users.find(function (user) {
+                users.find(
+                    function (user) {
 
-                    return (
-                        normalizeUsername(
-                            user.username
-                        ) === normalized
-                    );
+                        return (
+                            normalizeUsername(
+                                user.username
+                            ) ===
+                            normalized
+                        );
 
-                }) || null
+                    }
+                ) ||
+                null
             );
         },
 
@@ -499,10 +611,12 @@
             const sessionUserId =
                 this.getDevSession();
 
+
             if (!sessionUserId) {
 
                 return null;
             }
+
 
             return this.findDevUserById(
                 sessionUserId
@@ -519,34 +633,45 @@
             const user =
                 this.getCurrentDevUser();
 
+
             if (!user) {
 
                 return null;
             }
 
+
             const allData =
                 this.getDevData();
 
+
             return (
-                allData[user.id] || null
+                allData[user.id] ||
+                null
             );
         },
 
 
-        saveCurrentUserData: function (data) {
+        saveCurrentUserData: function (
+            data
+        ) {
 
             const user =
                 this.getCurrentDevUser();
+
 
             if (!user) {
 
                 return false;
             }
 
+
             const allData =
                 this.getDevData();
 
-            allData[user.id] = data;
+
+            allData[user.id] =
+                data;
+
 
             return this.saveDevData(
                 allData
@@ -567,53 +692,66 @@
                     username
                 );
 
+
             if (!user) {
 
                 return null;
             }
 
+
             const allData =
                 this.getDevData();
 
+
             const data =
                 allData[user.id];
+
 
             if (!data) {
 
                 return null;
             }
 
+
             return {
 
-                user: user,
+                user:
+                    user,
 
-                profile: data.profile || null,
+                profile:
+                    data.profile ||
+                    null,
 
                 services:
-                    data.services || [],
+                    data.services ||
+                    [],
 
                 work:
-                    data.work || [],
+                    data.work ||
+                    [],
 
                 reviews:
-                    data.reviews || [],
+                    data.reviews ||
+                    [],
 
                 analytics:
-                    data.analytics || {
+                    data.analytics ||
+                    {
                         profile_views: 0,
                         service_requests: 0,
                         total_contacts: 0
                     },
 
                 service_requests:
-                    data.service_requests || []
+                    data.service_requests ||
+                    []
             };
         },
 
 
         /* =================================================
            REAL BACKEND REQUEST
-           ================================================= */
+        ================================================= */
 
         request: async function (
             endpoint,
@@ -623,48 +761,58 @@
             const config =
                 getConfig();
 
+
             options =
-                options || {};
+                options ||
+                {};
+
 
             const url =
                 config.API_BASE_URL +
                 endpoint;
 
+
             log(
                 "SERVICEHUB API REQUEST:",
-                options.method || "GET",
+                options.method ||
+                    "GET",
                 url
             );
 
-            const requestOptions = {
 
-                method:
-                    options.method || "GET",
-
-                credentials: "include",
-
-                headers: {
-
-                    "Content-Type":
-                        "application/json",
-
-                    ...(options.headers || {})
-                }
-            };
+           const isFormData =
+    options.body instanceof FormData;
 
 
-            if (
-                options.body !== undefined
-            ) {
+const requestOptions = {
+    method: options.method || "GET",
 
-                requestOptions.body =
-                    typeof options.body === "string"
-                        ? options.body
-                        : JSON.stringify(
-                            options.body
-                        );
-            }
+    credentials: "include",
 
+    headers: {
+        ...(isFormData
+            ? {}
+            : {
+                "Content-Type":
+                    "application/json"
+            }),
+
+        ...(options.headers || {})
+    }
+};
+
+
+if (options.body !== undefined) {
+
+    requestOptions.body =
+        isFormData
+            ? options.body
+            : typeof options.body === "string"
+                ? options.body
+                : JSON.stringify(
+                    options.body
+                );
+}
 
             try {
 
@@ -675,7 +823,8 @@
                     );
 
 
-                let data = null;
+                let data =
+                    null;
 
 
                 const contentType =
@@ -699,11 +848,14 @@
                     const text =
                         await response.text();
 
-                    data = text
-                        ? {
-                            message: text
-                        }
-                        : null;
+
+                    data =
+                        text
+                            ? {
+                                message:
+                                    text
+                            }
+                            : null;
                 }
 
 
@@ -722,6 +874,7 @@
                             : (
                                 "ServiceHub request failed."
                             );
+
 
                     throw new Error(
                         message
@@ -744,6 +897,18 @@
                     error
                 );
 
+
+                if (
+                    error &&
+                    error.message &&
+                    error.message !==
+                    "Failed to fetch"
+                ) {
+
+                    throw error;
+                }
+
+
                 throw new Error(
                     "Unable to connect to the ServiceHub server."
                 );
@@ -759,12 +924,6 @@
             userData
         ) {
 
-            /*
-             * VERY IMPORTANT:
-             * Mock registration MUST return here.
-             * It must NEVER call localhost:7000.
-             */
-
             if (
                 this.isMockMode()
             ) {
@@ -775,7 +934,8 @@
 
 
                 userData =
-                    userData || {};
+                    userData ||
+                    {};
 
 
                 const fullName =
@@ -846,15 +1006,18 @@
 
 
                 const existingUser =
-                    users.find(function (user) {
+                    users.find(
+                        function (user) {
 
-                        return (
-                            normalizeEmail(
-                                user.email
-                            ) === email
-                        );
+                            return (
+                                normalizeEmail(
+                                    user.email
+                                ) ===
+                                email
+                            );
 
-                    });
+                        }
+                    );
 
 
                 if (existingUser) {
@@ -882,25 +1045,16 @@
                     nowISO();
 
 
-                /* =========================================
-                   USER
-                ========================================= */
-
                 const user = {
 
-                    id: userId,
+                    id:
+                        userId,
 
                     full_name:
                         fullName,
 
                     email:
                         email,
-
-                    /*
-                     * DEVELOPMENT ONLY.
-                     * Never store plain passwords
-                     * in production.
-                     */
 
                     password:
                         password,
@@ -934,10 +1088,6 @@
                     users
                 );
 
-
-                /* =========================================
-                   PROFILE
-                ========================================= */
 
                 const profile = {
 
@@ -1018,10 +1168,6 @@
                 };
 
 
-                /* =========================================
-                   PROVIDER DATA
-                ========================================= */
-
                 const providerData = {
 
                     profile:
@@ -1066,10 +1212,6 @@
                 );
 
 
-                /* =========================================
-                   AUTO LOGIN
-                ========================================= */
-
                 this.saveDevSession(
                     userId
                 );
@@ -1106,11 +1248,6 @@
             }
 
 
-            /*
-             * REAL BACKEND
-             * ONLY RUNS WHEN MOCK MODE IS FALSE.
-             */
-
             return this.request(
                 "/auth/register",
                 {
@@ -1134,7 +1271,8 @@
         ) {
 
             credentials =
-                credentials || {};
+                credentials ||
+                {};
 
 
             if (
@@ -1190,7 +1328,8 @@
 
 
                 if (
-                    user.password !== password
+                    user.password !==
+                    password
                 ) {
 
                     throw new Error(
@@ -1200,7 +1339,8 @@
 
 
                 if (
-                    user.is_active === false
+                    user.is_active ===
+                    false
                 ) {
 
                     throw new Error(
@@ -1571,7 +1711,8 @@
                 return !!(
                     data &&
                     data.profile &&
-                    data.profile.published === true
+                    data.profile.published ===
+                    true
                 );
             }
 
@@ -1663,6 +1804,10 @@
         },
 
 
+        /* =================================================
+           GET SINGLE SERVICE
+        ================================================= */
+
         getService: async function (
             serviceId
         ) {
@@ -1730,6 +1875,10 @@
         },
 
 
+        /* =================================================
+           CREATE SERVICE
+        ================================================= */
+
         createService: async function (
             serviceData
         ) {
@@ -1787,12 +1936,18 @@
                         ).trim(),
 
                     price:
-                        serviceData.price !== undefined
+                        serviceData.price !==
+                        undefined
                             ? serviceData.price
-                            : "",
+                            : 0,
 
-                    price_type:
-                        serviceData.price_type ||
+                    currency:
+                        serviceData.currency ||
+                        "NGN",
+
+                    pricing_type:
+                        serviceData.pricing_type ||
+                        serviceData.pricingType ||
                         "fixed",
 
                     category:
@@ -1803,12 +1958,12 @@
                         serviceData.duration ||
                         "",
 
-                    image:
-                        serviceData.image ||
-                        "",
-
-                    active:
-                        serviceData.active !== false,
+                    is_active:
+                        serviceData.is_active !==
+                        undefined
+                            ? serviceData.is_active
+                            : serviceData.active !==
+                              false,
 
                     created_at:
                         nowISO(),
@@ -1824,6 +1979,14 @@
                         "Service name is required."
                     );
                 }
+
+
+                data.services =
+                    Array.isArray(
+                        data.services
+                    )
+                        ? data.services
+                        : [];
 
 
                 data.services.push(
@@ -1850,6 +2013,77 @@
             }
 
 
+            /*
+             * REAL BACKEND
+             *
+             * The frontend uses:
+             *   pricingType
+             *   active
+             *
+             * The database uses:
+             *   pricing_type
+             *   is_active
+             */
+
+            serviceData =
+                serviceData ||
+                {};
+
+
+            const payload = {
+
+                name:
+                    String(
+                        serviceData.name ||
+                        ""
+                    ).trim(),
+
+                category:
+                    serviceData.category ||
+                    "Other",
+
+                description:
+                    String(
+                        serviceData.description ||
+                        ""
+                    ).trim(),
+
+                price:
+                    serviceData.price !==
+                    undefined
+                        ? Number(
+                            serviceData.price
+                        )
+                        : 0,
+
+                currency:
+                    serviceData.currency ||
+                    "NGN",
+
+                pricing_type:
+                    serviceData.pricing_type ||
+                    serviceData.pricingType ||
+                    "fixed",
+
+                duration:
+                    serviceData.duration ||
+                    "",
+
+                is_active:
+                    serviceData.is_active !==
+                    undefined
+                        ? Boolean(
+                            serviceData.is_active
+                        )
+                        : serviceData.active !==
+                          undefined
+                            ? Boolean(
+                                serviceData.active
+                            )
+                            : true
+            };
+
+
             return this.request(
                 "/services",
                 {
@@ -1858,11 +2092,15 @@
                         "POST",
 
                     body:
-                        serviceData
+                        payload
                 }
             );
         },
 
+
+        /* =================================================
+           UPDATE SERVICE
+        ================================================= */
 
         updateService: async function (
             serviceId,
@@ -1952,6 +2190,114 @@
             }
 
 
+            serviceData =
+                serviceData ||
+                {};
+
+
+            const payload = {};
+
+
+            if (
+                serviceData.name !==
+                undefined
+            ) {
+
+                payload.name =
+                    String(
+                        serviceData.name
+                    ).trim();
+            }
+
+
+            if (
+                serviceData.category !==
+                undefined
+            ) {
+
+                payload.category =
+                    serviceData.category;
+            }
+
+
+            if (
+                serviceData.description !==
+                undefined
+            ) {
+
+                payload.description =
+                    String(
+                        serviceData.description
+                    ).trim();
+            }
+
+
+            if (
+                serviceData.price !==
+                undefined
+            ) {
+
+                payload.price =
+                    Number(
+                        serviceData.price
+                    );
+            }
+
+
+            if (
+                serviceData.currency !==
+                undefined
+            ) {
+
+                payload.currency =
+                    serviceData.currency;
+            }
+
+
+            if (
+                serviceData.pricing_type !==
+                undefined ||
+                serviceData.pricingType !==
+                undefined
+            ) {
+
+                payload.pricing_type =
+                    serviceData.pricing_type !==
+                    undefined
+                        ? serviceData.pricing_type
+                        : serviceData.pricingType;
+            }
+
+
+            if (
+                serviceData.duration !==
+                undefined
+            ) {
+
+                payload.duration =
+                    serviceData.duration;
+            }
+
+
+            if (
+                serviceData.is_active !==
+                undefined ||
+                serviceData.active !==
+                undefined
+            ) {
+
+                payload.is_active =
+                    serviceData.is_active !==
+                    undefined
+                        ? Boolean(
+                            serviceData.is_active
+                        )
+                        : Boolean(
+                            serviceData.active
+                        );
+            }
+
+
             return this.request(
                 "/services/" +
                 encodeURIComponent(
@@ -1963,11 +2309,15 @@
                         "PUT",
 
                     body:
-                        serviceData
+                        payload
                 }
             );
         },
 
+
+        /* =================================================
+           DELETE SERVICE
+        ================================================= */
 
         deleteService: async function (
             serviceId
@@ -2268,7 +2618,8 @@
                         "",
 
                     price:
-                        workData.price !== undefined
+                        workData.price !==
+                        undefined
                             ? workData.price
                             : "",
 
@@ -2292,7 +2643,8 @@
                         "",
 
                     published:
-                        workData.published !== false,
+                        workData.published !==
+                        false,
 
                     created_at:
                         nowISO(),
@@ -2708,7 +3060,8 @@
             ) {
 
                 requestData =
-                    requestData || {};
+                    requestData ||
+                    {};
 
 
                 const providerUsername =
@@ -2845,7 +3198,8 @@
 
 
                 data.analytics =
-                    data.analytics || {};
+                    data.analytics ||
+                    {};
 
 
                 data.analytics.service_requests =
@@ -2977,7 +3331,8 @@
 
 
                 data.analytics =
-                    data.analytics || {};
+                    data.analytics ||
+                    {};
 
 
                 data.analytics.total_contacts =
@@ -2993,8 +3348,7 @@
                         "contacts_" +
                         String(
                             contactType
-                        )
-                            .toLowerCase();
+                        ).toLowerCase();
 
 
                     data.analytics[key] =
@@ -3090,7 +3444,8 @@
 
 
                 data.analytics =
-                    data.analytics || {};
+                    data.analytics ||
+                    {};
 
 
                 data.analytics.profile_views =
@@ -3184,28 +3539,34 @@
                     "Development data reset is only available in mock mode."
                 );
 
+
                 return false;
             }
 
 
             removeStorageItem(
-                getConfig().DEV_USERS_KEY
+                getConfig()
+                    .DEV_USERS_KEY
             );
 
 
             removeStorageItem(
-                getConfig().DEV_DATA_KEY
+                getConfig()
+                    .DEV_DATA_KEY
             );
 
 
             try {
 
                 sessionStorage.removeItem(
-                    getConfig().DEV_SESSION_KEY
+                    getConfig()
+                        .DEV_SESSION_KEY
                 );
 
+
                 sessionStorage.removeItem(
-                    getConfig().USER_STORAGE_KEY
+                    getConfig()
+                        .USER_STORAGE_KEY
                 );
 
             } catch (error) {

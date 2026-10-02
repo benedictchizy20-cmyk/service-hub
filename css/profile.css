@@ -5056,3 +5056,156 @@ body.profile-edit-open {
     }
 
 }
+/* =========================================================
+   COVER IMAGE UPLOAD
+========================================================= */
+
+.profile-dashboard-cover {
+    position: relative;
+}
+
+
+/* Change cover button */
+
+.profile-cover-change-button {
+
+    position: absolute;
+
+    right: 18px;
+
+    bottom: 18px;
+
+    z-index: 5;
+
+    display: inline-flex;
+
+    align-items: center;
+
+    justify-content: center;
+
+    gap: 7px;
+
+    min-height: 36px;
+
+    padding: 8px 13px;
+
+    border: 1px solid rgba(255,255,255,0.35);
+
+    border-radius: 7px;
+
+    background: rgba(23,23,23,0.78);
+
+    color: #ffffff;
+
+    font-size: 10px;
+
+    font-weight: 700;
+
+    cursor: pointer;
+
+    backdrop-filter: blur(5px);
+
+    -webkit-backdrop-filter: blur(5px);
+
+    transition:
+        background 0.2s ease,
+        border-color 0.2s ease,
+        color 0.2s ease,
+        transform 0.2s ease;
+}
+
+
+.profile-cover-change-button:hover {
+
+    background: var(--gold);
+
+    border-color: var(--gold);
+
+    color: var(--black);
+
+    transform: translateY(-1px);
+}
+
+
+.profile-cover-change-button i {
+
+    font-size: 13px;
+}
+
+
+.profile-cover-change-button:disabled {
+
+    opacity: 0.75;
+
+    cursor: not-allowed;
+
+    transform: none;
+}
+
+
+.profile-cover-change-button.uploading {
+
+    pointer-events: none;
+}
+
+
+/* Keep cover image clean */
+
+.profile-dashboard-cover.has-image {
+
+    background-repeat: no-repeat;
+
+    background-size: cover;
+
+    background-position: center;
+}
+
+
+/* Public profile should not show owner controls */
+
+body.public-profile-mode
+.profile-cover-change-button {
+
+    display: none;
+}
+
+
+/* Mobile */
+
+@media (max-width: 600px) {
+
+    .profile-cover-change-button {
+
+        right: 12px;
+
+        bottom: 12px;
+
+        min-height: 34px;
+
+        padding: 7px 10px;
+
+        font-size: 9px;
+    }
+
+}
+
+
+@media (max-width: 400px) {
+
+    .profile-cover-change-button span {
+
+        display: none;
+    }
+
+    .profile-cover-change-button {
+
+        width: 35px;
+
+        height: 35px;
+
+        padding: 0;
+
+        border-radius: 50%;
+    }
+
+}

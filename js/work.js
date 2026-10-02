@@ -1,28 +1,31 @@
 /* =========================================================
    SERVICEHUB - MY WORK PAGE
-   REAL IMAGE + VIDEO FILE UPLOAD
-   FRONTEND / MOCK-READY
-   BACKEND-READY API DETECTION
-   ========================================================= */
+   REAL BACKEND + SUPABASE STORAGE
+   IMAGE + VIDEO UPLOAD
+========================================================= */
 
 (function () {
     "use strict";
 
+
+    /* =====================================================
+       STATE
+    ===================================================== */
+
     const state = {
+
         user: null,
+
         work: [],
+
         filteredWork: [],
+
         editingId: null,
 
-        /*
-         * Real files selected from the computer.
-         */
         selectedMedia: [],
 
-        /*
-         * Existing media returned by backend.
-         */
         existingMedia: []
+
     };
 
 
@@ -36,6 +39,7 @@
 
 
     function firstDefined(...values) {
+
         return values.find(
             value =>
                 value !== undefined &&
@@ -51,13 +55,20 @@
             return null;
         }
 
-        if (response.data !== undefined) {
+
+        if (
+            response.data !== undefined
+        ) {
             return response.data;
         }
 
-        if (response.result !== undefined) {
+
+        if (
+            response.result !== undefined
+        ) {
             return response.result;
         }
+
 
         return response;
     }
@@ -65,23 +76,38 @@
 
     function extractArray(response) {
 
-        const data = unwrapData(response);
+        const data =
+            unwrapData(response);
+
 
         if (Array.isArray(data)) {
             return data;
         }
 
-        if (data && Array.isArray(data.work)) {
+
+        if (
+            data &&
+            Array.isArray(data.work)
+        ) {
             return data.work;
         }
 
-        if (data && Array.isArray(data.items)) {
+
+        if (
+            data &&
+            Array.isArray(data.items)
+        ) {
             return data.items;
         }
 
-        if (data && Array.isArray(data.results)) {
+
+        if (
+            data &&
+            Array.isArray(data.results)
+        ) {
             return data.results;
         }
+
 
         return [];
     }
@@ -100,45 +126,55 @@
 
     function getInitials(name) {
 
-        const value =
+        const parts =
             String(name || "ServiceHub")
                 .trim()
                 .split(/\s+/)
                 .filter(Boolean);
 
 
-        if (!value.length) {
+        if (!parts.length) {
             return "SH";
         }
 
 
-        if (value.length === 1) {
-            return value[0]
+        if (parts.length === 1) {
+
+            return parts[0]
                 .slice(0, 2)
                 .toUpperCase();
         }
 
 
         return (
-            value[0].charAt(0) +
-            value[value.length - 1].charAt(0)
+            parts[0].charAt(0) +
+            parts[parts.length - 1].charAt(0)
         ).toUpperCase();
     }
 
 
     function formatPrice(value) {
 
-        const number = Number(value);
+        const number =
+            Number(value);
 
-        if (!Number.isFinite(number) || number <= 0) {
+
+        if (
+            !Number.isFinite(number) ||
+            number <= 0
+        ) {
             return "Not specified";
         }
 
-        return new Intl.NumberFormat("en-NG", {
-            style: "currency",
-            currency: "NGN",
-            maximumFractionDigits: 0
-        }).format(number);
+
+        return new Intl.NumberFormat(
+            "en-NG",
+            {
+                style: "currency",
+                currency: "NGN",
+                maximumFractionDigits: 0
+            }
+        ).format(number);
     }
 
 
@@ -148,11 +184,19 @@
             return "";
         }
 
-        const date = new Date(value);
 
-        if (Number.isNaN(date.getTime())) {
+        const date =
+            new Date(value);
+
+
+        if (
+            Number.isNaN(
+                date.getTime()
+            )
+        ) {
             return "";
         }
+
 
         return new Intl.DateTimeFormat(
             "en-NG",
@@ -191,17 +235,18 @@
 
     function isAllowedMedia(file) {
 
-        return isImage(file) || isVideo(file);
+        return (
+            isImage(file) ||
+            isVideo(file)
+        );
     }
 
 
     function getMediaIcon(file) {
 
-        if (isVideo(file)) {
-            return "bi-camera-video-fill";
-        }
-
-        return "bi-image-fill";
+        return isVideo(file)
+            ? "bi-camera-video-fill"
+            : "bi-image-fill";
     }
 
 
@@ -211,142 +256,302 @@
             return "0 KB";
         }
 
-        if (bytes < 1024 * 1024) {
+
+        if (
+            bytes <
+            1024 * 1024
+        ) {
+
             return (
-                Math.round(bytes / 1024) +
+                Math.round(
+                    bytes / 1024
+                ) +
                 " KB"
             );
         }
 
+
         return (
-            (bytes / (1024 * 1024))
-                .toFixed(1) +
+            (
+                bytes /
+                (1024 * 1024)
+            ).toFixed(1) +
             " MB"
         );
     }
 
 
-    function normalizeMedia(media) {
+    function normalizeMedia(
+        media,
+        defaultType = ""
+    ) {
 
         if (!media) {
             return null;
         }
 
 
-        if (typeof media === "string") {
+        if (
+            typeof media === "string"
+        ) {
+
+            const video =
+                /\.(mp4|webm|mov|m4v)$/i
+                    .test(media);
+
 
             return {
+
                 url: media,
-                type: "image"
+
+                type:
+                    video
+                        ? "video"
+                        : (
+                            defaultType ||
+                            "image"
+                        )
+
             };
         }
 
 
-        return {
-            url: firstDefined(
+        const url =
+            firstDefined(
                 media.url,
                 media.media_url,
                 media.file_url,
                 media.fileUrl,
                 media.src
-            ) || "",
+            );
 
-            type: firstDefined(
-                media.type,
-                media.mime_type,
-                media.mimeType
-            ) || "",
 
-            name: firstDefined(
-                media.name,
-                media.file_name,
-                media.filename
-            ) || ""
+        if (!url) {
+            return null;
+        }
+
+
+        return {
+
+            url,
+
+            type:
+                firstDefined(
+                    media.type,
+                    media.mime_type,
+                    media.mimeType
+                ) || defaultType || "image",
+
+            name:
+                firstDefined(
+                    media.name,
+                    media.file_name,
+                    media.filename
+                ) || ""
         };
     }
 
+
+    /* =====================================================
+       EXTRACT BACKEND MEDIA
+    ===================================================== */
 
     function extractWorkMedia(work) {
 
         const media = [];
 
 
-        /*
-         * New backend media array.
-         */
-        if (Array.isArray(work.media)) {
+        function addMedia(
+            item,
+            type = ""
+        ) {
 
-            work.media.forEach(item => {
+            const normalized =
+                normalizeMedia(
+                    item,
+                    type
+                );
 
-                const normalized =
-                    normalizeMedia(item);
 
-                if (normalized) {
-                    media.push(normalized);
-                }
+            if (
+                normalized &&
+                normalized.url &&
+                !media.some(
+                    existing =>
+                        existing.url ===
+                        normalized.url
+                )
+            ) {
 
-            });
+                media.push(
+                    normalized
+                );
+            }
         }
 
 
         /*
-         * Alternative backend names.
+         * Main image
          */
-        if (Array.isArray(work.media_files)) {
+        if (work.image) {
 
-            work.media_files.forEach(item => {
-
-                const normalized =
-                    normalizeMedia(item);
-
-                if (normalized) {
-                    media.push(normalized);
-                }
-
-            });
-        }
-
-
-        if (Array.isArray(work.files)) {
-
-            work.files.forEach(item => {
-
-                const normalized =
-                    normalizeMedia(item);
-
-                if (normalized) {
-                    media.push(normalized);
-                }
-
-            });
-        }
-
-
-        /*
-         * Backwards compatibility with old image URL data.
-         */
-        const oldImage =
-            firstDefined(
+            addMedia(
                 work.image,
-                work.image_url,
-                work.cover_image,
-                work.cover_image_url,
-                work.thumbnail
+                "image"
             );
+        }
 
 
+        /*
+         * Images JSONB array
+         */
         if (
-            oldImage &&
-            !media.some(
-                item =>
-                    item.url === oldImage
+            Array.isArray(
+                work.images
             )
         ) {
 
-            media.push({
-                url: oldImage,
-                type: "image"
-            });
+            work.images.forEach(
+                item => {
+
+                    addMedia(
+                        item,
+                        "image"
+                    );
+
+                }
+            );
+        }
+
+
+        /*
+         * Video column.
+         *
+         * IMPORTANT:
+         * The database column is "video",
+         * not "videos".
+         *
+         * The backend stores the first
+         * uploaded video URL here.
+         */
+        if (work.video) {
+
+            if (
+                Array.isArray(
+                    work.video
+                )
+            ) {
+
+                work.video.forEach(
+                    item => {
+
+                        addMedia(
+                            item,
+                            "video"
+                        );
+
+                    }
+                );
+
+            } else {
+
+                addMedia(
+                    work.video,
+                    "video"
+                );
+            }
+        }
+
+
+        /*
+         * Backwards compatibility.
+         *
+         * This allows older records using
+         * "videos" to continue working.
+         */
+        if (work.videos) {
+
+            if (
+                Array.isArray(
+                    work.videos
+                )
+            ) {
+
+                work.videos.forEach(
+                    item => {
+
+                        addMedia(
+                            item,
+                            "video"
+                        );
+
+                    }
+                );
+
+            } else {
+
+                addMedia(
+                    work.videos,
+                    "video"
+                );
+            }
+        }
+
+
+        /*
+         * Backwards compatibility.
+         */
+        if (
+            Array.isArray(
+                work.media
+            )
+        ) {
+
+            work.media.forEach(
+                item => {
+
+                    addMedia(
+                        item
+                    );
+
+                }
+            );
+        }
+
+
+        if (
+            Array.isArray(
+                work.media_files
+            )
+        ) {
+
+            work.media_files.forEach(
+                item => {
+
+                    addMedia(
+                        item
+                    );
+
+                }
+            );
+        }
+
+
+        if (
+            Array.isArray(
+                work.files
+            )
+        ) {
+
+            work.files.forEach(
+                item => {
+
+                    addMedia(
+                        item
+                    );
+
+                }
+            );
         }
 
 
@@ -358,63 +563,117 @@
        NORMALIZE WORK
     ===================================================== */
 
-    function normalizeWork(work) {
+    function normalizeWork(
+        work
+    ) {
 
-        work = work || {};
+        work =
+            work || {};
 
 
-        const published =
-            work.published !== undefined
-                ? Boolean(work.published)
+        let published;
 
-                : work.is_published !== undefined
-                    ? Boolean(work.is_published)
 
-                    : work.status
-                        ? String(
-                            work.status
-                        ).toLowerCase() ===
-                          "published"
+        if (
+            work.published !==
+            undefined
+        ) {
 
-                        : true;
+            published =
+                work.published === true ||
+                work.published === "true" ||
+                work.published === 1 ||
+                work.published === "1";
+
+        } else if (
+            work.is_published !==
+            undefined
+        ) {
+
+            published =
+                work.is_published === true ||
+                work.is_published === "true" ||
+                work.is_published === 1 ||
+                work.is_published === "1";
+
+        } else if (
+            work.status
+        ) {
+
+            published =
+                String(
+                    work.status
+                ).toLowerCase() ===
+                "published";
+
+        } else {
+
+            published = true;
+        }
 
 
         return {
 
-            id: firstDefined(
-                work.id,
-                work._id,
-                work.work_id,
-                work.project_id
-            ) || (
-                "work-" +
-                Date.now() +
-                "-" +
-                Math.random()
-            ),
+            id:
+                firstDefined(
+                    work.id,
+                    work._id,
+                    work.work_id,
+                    work.project_id
+                ) ||
+                (
+                    "work-" +
+                    Date.now() +
+                    "-" +
+                    Math.random()
+                ),
 
 
-            title: firstDefined(
-                work.title,
-                work.name,
-                work.project_title
-            ) || "Untitled Project",
+            title:
+                firstDefined(
+                    work.title,
+                    work.name,
+                    work.project_title
+                ) ||
+                "Untitled Project",
 
 
-            category: firstDefined(
-                work.category,
-                work.type
-            ) || "Other",
+            category:
+                firstDefined(
+                    work.category
+                ) ||
+                "Other",
 
 
-            description: firstDefined(
-                work.description,
-                work.details
-            ) || "",
+            description:
+                firstDefined(
+                    work.description,
+                    work.details
+                ) ||
+                "",
+
+
+            type:
+                firstDefined(
+                    work.type
+                ) ||
+                "previous",
+
+
+            location:
+                firstDefined(
+                    work.location
+                ) ||
+                "",
 
 
             media:
-                extractWorkMedia(work),
+                extractWorkMedia(
+                    work
+                ),
+
+
+            published,
 
 
             status:
@@ -423,41 +682,28 @@
                     : "draft",
 
 
-            published,
+            price:
+                firstDefined(
+                    work.price,
+                    work.amount,
+                    work.project_value
+                ) || 0,
 
 
-            price: firstDefined(
-                work.price,
-                work.amount,
-                work.project_value
-            ) || 0,
+            createdAt:
+                firstDefined(
+                    work.created_at,
+                    work.createdAt
+                ) ||
+                new Date().toISOString(),
 
 
-            client: firstDefined(
-                work.client,
-                work.client_name,
-                work.company,
-                work.company_name
-            ) || "",
-
-
-            completionDate: firstDefined(
-                work.completionDate,
-                work.completion_date,
-                work.completed_at
-            ) || "",
-
-
-            createdAt: firstDefined(
-                work.createdAt,
-                work.created_at
-            ) || new Date().toISOString(),
-
-
-            updatedAt: firstDefined(
-                work.updatedAt,
-                work.updated_at
-            ) || new Date().toISOString()
+            updatedAt:
+                firstDefined(
+                    work.updated_at,
+                    work.updatedAt
+                ) ||
+                new Date().toISOString()
         };
     }
 
@@ -534,12 +780,14 @@
                 const response =
                     await ServiceHubAPI.getCurrentUser();
 
-                state.user =
-                    unwrapData(response) ||
-                    response;
-            }
 
-            else if (
+                state.user =
+                    unwrapData(
+                        response
+                    ) ||
+                    response;
+
+            } else if (
                 window.ServiceHubAuth &&
                 typeof ServiceHubAuth.getCurrentUser ===
                     "function"
@@ -548,9 +796,7 @@
                 state.user =
                     await ServiceHubAuth.getCurrentUser();
 
-            }
-
-            else if (
+            } else if (
                 window.ServiceHubApp &&
                 typeof ServiceHubApp.getCurrentUser ===
                     "function"
@@ -559,20 +805,7 @@
                 state.user =
                     await ServiceHubApp.getCurrentUser();
 
-            }
-
-            else if (
-                window.ServiceHubAPI &&
-                typeof ServiceHubAPI.getCurrentDevUser ===
-                    "function"
-            ) {
-
-                state.user =
-                    await ServiceHubAPI.getCurrentDevUser();
-
-            }
-
-            else {
+            } else {
 
                 state.user = null;
             }
@@ -583,6 +816,7 @@
                 "ServiceHub Work: unable to load user",
                 error
             );
+
 
             state.user = null;
         }
@@ -602,6 +836,7 @@
 
                 window.location.href =
                     "./login.html";
+
 
                 return false;
             }
@@ -625,7 +860,8 @@
                 user.name,
                 user.username,
                 user.email
-            ) || "ServiceHub User";
+            ) ||
+            "ServiceHub User";
 
 
         const role =
@@ -634,7 +870,8 @@
                 user.user_type,
                 user.account_type,
                 user.type
-            ) || "Provider";
+            ) ||
+            "Provider";
 
 
         const initials =
@@ -646,6 +883,7 @@
 
 
         if (sidebarName) {
+
             sidebarName.textContent =
                 name;
         }
@@ -685,17 +923,22 @@
             if (avatar) {
 
                 sidebarAvatar.innerHTML =
-                    `<img
+                    `
+                    <img
                         src="${escapeHTML(avatar)}"
                         alt="Profile"
-                    >`;
+                    >
+                    `;
 
             } else {
 
                 sidebarAvatar.innerHTML =
-                    `<span>
+                    `
+                    <span>
                         ${escapeHTML(initials)}
-                    </span>`;
+                    </span>
+                    `;
+
             }
         }
 
@@ -705,6 +948,7 @@
 
 
         if (topbarName) {
+
             topbarName.textContent =
                 name;
         }
@@ -719,17 +963,22 @@
             if (avatar) {
 
                 topbarAvatar.innerHTML =
-                    `<img
+                    `
+                    <img
                         src="${escapeHTML(avatar)}"
                         alt="Profile"
-                    >`;
+                    >
+                    `;
 
             } else {
 
                 topbarAvatar.innerHTML =
-                    `<span>
+                    `
+                    <span>
                         ${escapeHTML(initials)}
-                    </span>`;
+                    </span>
+                    `;
+
             }
         }
     }
@@ -747,19 +996,27 @@
         try {
 
             if (
-                window.ServiceHubAPI &&
-                typeof ServiceHubAPI.getWork ===
+                !window.ServiceHubAPI ||
+                typeof ServiceHubAPI.getWork !==
                     "function"
             ) {
 
-                const response =
-                    await ServiceHubAPI.getWork();
-
-
-                state.work =
-                    extractArray(response)
-                        .map(normalizeWork);
+                throw new Error(
+                    "Work API is not available."
+                );
             }
+
+
+            const response =
+                await ServiceHubAPI.getWork();
+
+
+            state.work =
+                extractArray(response)
+                    .map(
+                        normalizeWork
+                    );
+
 
         } catch (error) {
 
@@ -770,6 +1027,7 @@
 
 
             showAlert(
+                error.message ||
                 "Unable to load your work.",
                 "danger"
             );
@@ -805,25 +1063,36 @@
 
                 const title =
                     String(
-                        project.title || ""
+                        project.title ||
+                        ""
                     ).toLowerCase();
 
 
                 const description =
                     String(
-                        project.description || ""
+                        project.description ||
+                        ""
                     ).toLowerCase();
 
 
                 const category =
                     String(
-                        project.category || ""
+                        project.category ||
+                        ""
                     ).toLowerCase();
 
 
-                const client =
+                const location =
                     String(
-                        project.client || ""
+                        project.location ||
+                        ""
+                    ).toLowerCase();
+
+
+                const type =
+                    String(
+                        project.type ||
+                        ""
                     ).toLowerCase();
 
 
@@ -832,14 +1101,16 @@
                     title.includes(search) ||
                     description.includes(search) ||
                     category.includes(search) ||
-                    client.includes(search);
+                    location.includes(search) ||
+                    type.includes(search);
 
 
                 const matchesStatus =
                     status === "all" ||
 
                     (
-                        status === "published" &&
+                        status ===
+                            "published" &&
                         project.published
                     ) ||
 
@@ -876,7 +1147,8 @@
 
 
         const drafts =
-            total - published;
+            total -
+            published;
 
 
         const withMedia =
@@ -885,30 +1157,39 @@
                     Array.isArray(
                         project.media
                     ) &&
-                    project.media.length > 0
+                    project.media.length >
+                        0
             ).length;
 
 
         if ($("totalWork")) {
-            $("totalWork").textContent =
+
+            $("totalWork")
+                .textContent =
                 total;
         }
 
 
         if ($("publishedWork")) {
-            $("publishedWork").textContent =
+
+            $("publishedWork")
+                .textContent =
                 published;
         }
 
 
         if ($("draftWork")) {
-            $("draftWork").textContent =
+
+            $("draftWork")
+                .textContent =
                 drafts;
         }
 
 
         if ($("workWithImages")) {
-            $("workWithImages").textContent =
+
+            $("workWithImages")
+                .textContent =
                 withMedia;
         }
     }
@@ -918,14 +1199,19 @@
        ICON
     ===================================================== */
 
-    function getWorkIcon(category) {
+    function getWorkIcon(
+        category
+    ) {
 
         const value =
-            String(category || "")
-                .toLowerCase();
+            String(
+                category || ""
+            ).toLowerCase();
 
 
-        if (value.includes("design")) {
+        if (
+            value.includes("design")
+        ) {
             return "bi-palette-fill";
         }
 
@@ -938,27 +1224,37 @@
         }
 
 
-        if (value.includes("photo")) {
+        if (
+            value.includes("photo")
+        ) {
             return "bi-camera-fill";
         }
 
 
-        if (value.includes("marketing")) {
+        if (
+            value.includes("marketing")
+        ) {
             return "bi-megaphone-fill";
         }
 
 
-        if (value.includes("writing")) {
+        if (
+            value.includes("writing")
+        ) {
             return "bi-pencil-fill";
         }
 
 
-        if (value.includes("business")) {
+        if (
+            value.includes("business")
+        ) {
             return "bi-building-fill";
         }
 
 
-        if (value.includes("consult")) {
+        if (
+            value.includes("consult")
+        ) {
             return "bi-chat-square-text-fill";
         }
 
@@ -971,10 +1267,14 @@
        CARD MEDIA
     ===================================================== */
 
-    function renderCardMedia(project) {
+    function renderCardMedia(
+        project
+    ) {
 
         const media =
-            Array.isArray(project.media)
+            Array.isArray(
+                project.media
+            )
                 ? project.media
                 : [];
 
@@ -983,7 +1283,10 @@
             media[0];
 
 
-        if (!firstMedia || !firstMedia.url) {
+        if (
+            !firstMedia ||
+            !firstMedia.url
+        ) {
 
             return `
                 <div class="work-card-image-placeholder">
@@ -997,15 +1300,17 @@
 
         const type =
             String(
-                firstMedia.type || ""
+                firstMedia.type ||
+                ""
             ).toLowerCase();
 
 
         const isVideoMedia =
             type.includes("video") ||
-            /\.(mp4|webm|mov|m4v)$/i.test(
-                firstMedia.url
-            );
+            /\.(mp4|webm|mov|m4v)$/i
+                .test(
+                    firstMedia.url
+                );
 
 
         if (isVideoMedia) {
@@ -1018,6 +1323,7 @@
                     )}"
                     muted
                     preload="metadata"
+                    controls
                 ></video>
 
                 <div class="work-card-video-icon">
@@ -1043,7 +1349,7 @@
 
 
     /* =====================================================
-       RENDER WORK
+       WORK CARD
     ===================================================== */
 
     function renderWork() {
@@ -1136,217 +1442,243 @@
 
         grid.innerHTML =
             projects
-                .map(project => {
+                .map(
+                    project => {
 
-                    const statusClass =
-                        project.published
-                            ? "published"
-                            : "draft";
-
-
-                    const statusText =
-                        project.published
-                            ? "Published"
-                            : "Draft";
+                        const statusClass =
+                            project.published
+                                ? "published"
+                                : "draft";
 
 
-                    const category =
-                        project.category
-                            ? escapeHTML(
-                                project.category
+                        const statusText =
+                            project.published
+                                ? "Published"
+                                : "Draft";
+
+
+                        const category =
+                            project.category
+                                ? escapeHTML(
+                                    project.category
+                                )
+                                : "Other";
+
+
+                        const type =
+                            project.type
+                                ? escapeHTML(
+                                    project.type
+                                )
+                                : "";
+
+
+                        const location =
+                            project.location;
+
+
+                        const mediaCount =
+                            Array.isArray(
+                                project.media
                             )
-                            : "Other";
+                                ? project.media.length
+                                : 0;
 
 
-                    const client =
-                        project.client
-                            ? `
-                                <span
-                                    class="work-meta-item"
-                                >
-                                    <i class="bi bi-person-fill"></i>
-                                    ${escapeHTML(
-                                        project.client
-                                    )}
-                                </span>
-                            `
-                            : "";
-
-
-                    const date =
-                        project.completionDate
-                            ? `
-                                <span
-                                    class="work-meta-item"
-                                >
-                                    <i class="bi bi-calendar3"></i>
-                                    ${escapeHTML(
-                                        formatDate(
-                                            project.completionDate
-                                        )
-                                    )}
-                                </span>
-                            `
-                            : "";
-
-
-                    const mediaCount =
-                        Array.isArray(
-                            project.media
-                        )
-                            ? project.media.length
-                            : 0;
-
-
-                    return `
-                        <article
-                            class="work-card"
-                            data-work-id="${escapeHTML(
-                                project.id
-                            )}"
-                        >
-
-                            <div
-                                class="work-card-image"
+                        return `
+                            <article
+                                class="work-card"
+                                data-work-id="${escapeHTML(
+                                    project.id
+                                )}"
                             >
 
-                                ${renderCardMedia(
-                                    project
-                                )}
-
-                                <span
-                                    class="work-card-status ${statusClass}"
+                                <div
+                                    class="work-card-image"
                                 >
-                                    <i
-                                        class="bi bi-circle-fill"
-                                    ></i>
 
-                                    ${statusText}
-                                </span>
+                                    ${renderCardMedia(
+                                        project
+                                    )}
+
+                                    <span
+                                        class="work-card-status ${statusClass}"
+                                    >
+                                        <i
+                                            class="bi bi-circle-fill"
+                                        ></i>
+
+                                        ${statusText}
+                                    </span>
 
 
-                                ${
-                                    mediaCount > 1
-                                        ? `
-                                            <span
-                                                class="work-media-count"
+                                    ${
+                                        mediaCount > 1
+                                            ? `
+                                                <span
+                                                    class="work-media-count"
+                                                >
+                                                    <i
+                                                        class="bi bi-images"
+                                                    ></i>
+
+                                                    ${mediaCount}
+                                                </span>
+                                            `
+                                            : ""
+                                    }
+
+                                </div>
+
+
+                                <div
+                                    class="work-card-body"
+                                >
+
+                                    <div
+                                        class="work-card-category"
+                                    >
+                                        ${category}
+                                    </div>
+
+
+                                    <h3
+                                        class="work-card-title"
+                                    >
+                                        ${escapeHTML(
+                                            project.title
+                                        )}
+                                    </h3>
+
+
+                                    <p
+                                        class="work-card-description"
+                                    >
+                                        ${escapeHTML(
+                                            project.description ||
+                                            "No description provided."
+                                        )}
+                                    </p>
+
+
+                                    <div
+                                        class="work-card-meta"
+                                    >
+
+                                        ${
+                                            type
+                                                ? `
+                                                    <span
+                                                        class="work-meta-item"
+                                                    >
+                                                        <i class="bi bi-briefcase-fill"></i>
+                                                        ${type}
+                                                    </span>
+                                                `
+                                                : ""
+                                        }
+
+
+                                        ${
+                                            location
+                                                ? `
+                                                    <span
+                                                        class="work-meta-item"
+                                                    >
+                                                        <i class="bi bi-geo-alt-fill"></i>
+                                                        ${escapeHTML(
+                                                            location
+                                                        )}
+                                                    </span>
+                                                `
+                                                : ""
+                                        }
+
+
+                                        ${
+                                            project.createdAt
+                                                ? `
+                                                    <span
+                                                        class="work-meta-item"
+                                                    >
+                                                        <i class="bi bi-calendar3"></i>
+                                                        ${escapeHTML(
+                                                            formatDate(
+                                                                project.createdAt
+                                                            )
+                                                        )}
+                                                    </span>
+                                                `
+                                                : ""
+                                        }
+
+                                    </div>
+
+
+                                    <div
+                                        class="work-card-footer"
+                                    >
+
+                                        <div
+                                            class="work-project-price"
+                                        >
+
+                                            <span>
+                                                Project Value
+                                            </span>
+
+                                            <strong>
+                                                ${formatPrice(
+                                                    project.price
+                                                )}
+                                            </strong>
+
+                                        </div>
+
+
+                                        <div
+                                            class="work-card-actions"
+                                        >
+
+                                            <button
+                                                type="button"
+                                                class="work-action-button"
+                                                data-action="edit"
+                                                data-id="${escapeHTML(
+                                                    project.id
+                                                )}"
+                                                title="Edit project"
                                             >
                                                 <i
-                                                    class="bi bi-images"
+                                                    class="bi bi-pencil"
                                                 ></i>
-                                                ${mediaCount}
-                                            </span>
-                                        `
-                                        : ""
-                                }
-
-                            </div>
+                                            </button>
 
 
-                            <div
-                                class="work-card-body"
-                            >
+                                            <button
+                                                type="button"
+                                                class="work-action-button delete"
+                                                data-action="delete"
+                                                data-id="${escapeHTML(
+                                                    project.id
+                                                )}"
+                                                title="Delete project"
+                                            >
+                                                <i
+                                                    class="bi bi-trash3"
+                                                ></i>
+                                            </button>
 
-                                <div
-                                    class="work-card-category"
-                                >
-                                    ${category}
-                                </div>
-
-
-                                <h3
-                                    class="work-card-title"
-                                >
-                                    ${escapeHTML(
-                                        project.title
-                                    )}
-                                </h3>
-
-
-                                <p
-                                    class="work-card-description"
-                                >
-                                    ${escapeHTML(
-                                        project.description ||
-                                        "No description provided."
-                                    )}
-                                </p>
-
-
-                                <div
-                                    class="work-card-meta"
-                                >
-
-                                    ${client}
-
-                                    ${date}
-
-                                </div>
-
-
-                                <div
-                                    class="work-card-footer"
-                                >
-
-                                    <div
-                                        class="work-project-price"
-                                    >
-
-                                        <span>
-                                            Project Value
-                                        </span>
-
-                                        <strong>
-                                            ${formatPrice(
-                                                project.price
-                                            )}
-                                        </strong>
-
-                                    </div>
-
-
-                                    <div
-                                        class="work-card-actions"
-                                    >
-
-                                        <button
-                                            type="button"
-                                            class="work-action-button"
-                                            data-action="edit"
-                                            data-id="${escapeHTML(
-                                                project.id
-                                            )}"
-                                            title="Edit project"
-                                        >
-                                            <i
-                                                class="bi bi-pencil"
-                                            ></i>
-                                        </button>
-
-
-                                        <button
-                                            type="button"
-                                            class="work-action-button delete"
-                                            data-action="delete"
-                                            data-id="${escapeHTML(
-                                                project.id
-                                            )}"
-                                            title="Delete project"
-                                        >
-                                            <i
-                                                class="bi bi-trash3"
-                                            ></i>
-                                        </button>
+                                        </div>
 
                                     </div>
 
                                 </div>
 
-                            </div>
-
-                        </article>
-                    `;
-                })
+                            </article>
+                        `;
+                    }
+                )
                 .join("");
     }
 
@@ -1360,7 +1692,7 @@
 
 
     /* =====================================================
-       MEDIA PREVIEW
+       SELECTED MEDIA PREVIEW
     ===================================================== */
 
     function renderSelectedMedia() {
@@ -1378,13 +1710,18 @@
             "";
 
 
-        if (!state.selectedMedia.length) {
+        if (
+            !state.selectedMedia.length
+        ) {
             return;
         }
 
 
         state.selectedMedia.forEach(
-            (file, index) => {
+            (
+                file,
+                index
+            ) => {
 
                 const item =
                     document.createElement(
@@ -1402,10 +1739,12 @@
                     );
 
 
-                let mediaHTML = "";
+                let mediaHTML;
 
 
-                if (isImage(file)) {
+                if (
+                    isImage(file)
+                ) {
 
                     mediaHTML = `
                         <img
@@ -1494,7 +1833,9 @@
     }
 
 
-    function addSelectedFiles(files) {
+    function addSelectedFiles(
+        files
+    ) {
 
         const incoming =
             Array.from(
@@ -1510,73 +1851,81 @@
         let added = 0;
 
 
-        incoming.forEach(file => {
+        incoming.forEach(
+            file => {
 
-            if (!isAllowedMedia(file)) {
+                if (
+                    !isAllowedMedia(file)
+                ) {
 
-                showAlert(
-                    `${file.name} is not a supported image or video.`,
-                    "danger"
-                );
+                    showAlert(
+                        `${file.name} is not a supported image or video.`,
+                        "danger"
+                    );
 
-                return;
+                    return;
+                }
+
+
+                const maxSize =
+                    50 *
+                    1024 *
+                    1024;
+
+
+                if (
+                    file.size >
+                    maxSize
+                ) {
+
+                    showAlert(
+                        `${file.name} is larger than 50 MB.`,
+                        "danger"
+                    );
+
+                    return;
+                }
+
+
+                const duplicate =
+                    state.selectedMedia.some(
+                        existing =>
+                            existing.name ===
+                                file.name &&
+                            existing.size ===
+                                file.size &&
+                            existing.lastModified ===
+                                file.lastModified
+                    );
+
+
+                if (!duplicate) {
+
+                    state.selectedMedia.push(
+                        file
+                    );
+
+                    added++;
+                }
             }
-
-
-            /*
-             * 100 MB frontend safety limit.
-             * We can change this when backend storage
-             * limits are decided.
-             */
-            const maxSize =
-                100 * 1024 * 1024;
-
-
-            if (file.size > maxSize) {
-
-                showAlert(
-                    `${file.name} is larger than 100 MB.`,
-                    "danger"
-                );
-
-                return;
-            }
-
-
-            const duplicate =
-                state.selectedMedia.some(
-                    existing =>
-                        existing.name ===
-                            file.name &&
-                        existing.size ===
-                            file.size &&
-                        existing.lastModified ===
-                            file.lastModified
-                );
-
-
-            if (!duplicate) {
-
-                state.selectedMedia.push(
-                    file
-                );
-
-                added++;
-            }
-        });
+        );
 
 
         if (added > 0) {
+
             renderSelectedMedia();
         }
     }
 
 
-    function removeSelectedMedia(index) {
+    function removeSelectedMedia(
+        index
+    ) {
 
         if (
             index < 0 ||
-            index >= state.selectedMedia.length
+            index >=
+                state.selectedMedia.length
         ) {
             return;
         }
@@ -1601,7 +1950,7 @@
 
 
     /* =====================================================
-       FILE UPLOAD EVENTS
+       FILE UPLOAD
     ===================================================== */
 
     function setupMediaUpload() {
@@ -1615,6 +1964,7 @@
 
 
         if (!input) {
+
             console.warn(
                 "ServiceHub Work: workMediaInput not found."
             );
@@ -1632,18 +1982,11 @@
                 );
 
 
-                /*
-                 * Allows selecting the same
-                 * file again later.
-                 */
                 input.value = "";
             }
         );
 
 
-        /*
-         * Drag and drop.
-         */
         if (dropzone) {
 
             dropzone.addEventListener(
@@ -1689,9 +2032,6 @@
         }
 
 
-        /*
-         * Remove selected media.
-         */
         $("workMediaPreview")
             ?.addEventListener(
                 "click",
@@ -1766,36 +2106,21 @@
             project?.category || "";
 
 
-        $("workDate").value =
-            project?.completionDate
-                ? String(
-                    project.completionDate
-                ).slice(0, 10)
-                : "";
+        $("workType").value =
+            project?.type ||
+            "previous";
 
 
         $("workDescription").value =
             project?.description || "";
 
 
-        /*
-         * There is intentionally NO:
-         *
-         * workImage
-         * image URL
-         * image_url
-         *
-         * New media comes from
-         * workMediaInput.
-         */
-
-
         $("workPrice").value =
             project?.price || "";
 
 
-        $("workClient").value =
-            project?.client || "";
+        $("workLocation").value =
+            project?.location || "";
 
 
         $("workPublished").checked =
@@ -1894,6 +2219,7 @@
 
 
         if (existing) {
+
             existing.innerHTML =
                 "";
         }
@@ -1910,10 +2236,6 @@
             $("existingWorkMedia");
 
 
-        /*
-         * If the HTML does not have the container yet,
-         * create it directly after the upload preview.
-         */
         if (
             !container &&
             $("workMediaPreview")
@@ -2002,7 +2324,10 @@
         state.existingMedia.forEach(
             media => {
 
-                if (!media.url) {
+                if (
+                    !media ||
+                    !media.url
+                ) {
                     return;
                 }
 
@@ -2019,7 +2344,8 @@
 
                 const type =
                     String(
-                        media.type || ""
+                        media.type ||
+                        ""
                     ).toLowerCase();
 
 
@@ -2027,9 +2353,10 @@
                     type.includes(
                         "video"
                     ) ||
-                    /\.(mp4|webm|mov|m4v)$/i.test(
-                        media.url
-                    );
+                    /\.(mp4|webm|mov|m4v)$/i
+                        .test(
+                            media.url
+                        );
 
 
                 item.innerHTML =
@@ -2040,6 +2367,7 @@
                                     media.url
                                 )}"
                                 controls
+                                preload="metadata"
                             ></video>
                         `
                         : `
@@ -2066,10 +2394,12 @@
 
 
     /* =====================================================
-       SAVE
+       SAVE WORK
     ===================================================== */
 
-    async function saveWork(event) {
+    async function saveWork(
+        event
+    ) {
 
         event.preventDefault();
 
@@ -2086,21 +2416,23 @@
                 .trim();
 
 
-        if (!title || !description) {
+        if (
+            !title ||
+            !description
+        ) {
 
             showAlert(
                 "Please enter the project title and description.",
                 "danger"
             );
 
-
             return;
         }
 
 
         /*
-         * New projects require at least
-         * one real media file.
+         * New work requires at least
+         * one image or video.
          */
         if (
             !state.editingId &&
@@ -2112,21 +2444,13 @@
                 "danger"
             );
 
-
             return;
         }
 
 
-        const existing =
-            state.work.find(
-                project =>
-                    String(project.id) ===
-                    String(state.editingId)
-            );
-
-
         const published =
-            $("workPublished").checked;
+            $("workPublished")
+                .checked;
 
 
         const wasEditing =
@@ -2162,18 +2486,13 @@
         try {
 
             /*
-             * =================================================
-             * BACKEND CREATE
-             * =================================================
-             *
-             * If createWork exists, send actual files
-             * through FormData.
+             * ===============================================
+             * CREATE
+             * ===============================================
              */
+
             if (
-                !state.editingId &&
-                window.ServiceHubAPI &&
-                typeof ServiceHubAPI.createWork ===
-                    "function"
+                !state.editingId
             ) {
 
                 const formData =
@@ -2210,29 +2529,27 @@
 
 
                 formData.append(
-                    "client_name",
-                    $("workClient").value.trim()
+                    "type",
+                    $("workType").value ||
+                    "previous"
                 );
 
 
                 formData.append(
-                    "completion_date",
-                    $("workDate").value || ""
+                    "location",
+                    $("workLocation").value
+                        .trim()
                 );
 
 
                 formData.append(
                     "published",
-                    String(published)
+                    String(
+                        published
+                    )
                 );
 
 
-                /*
-                 * IMPORTANT:
-                 *
-                 * "media" is the backend field
-                 * that will receive the files.
-                 */
                 state.selectedMedia.forEach(
                     file => {
 
@@ -2251,11 +2568,20 @@
                     );
 
 
+                const responseData =
+                    unwrapData(
+                        response
+                    );
+
+
+                const createdWork =
+                    responseData?.work ||
+                    responseData;
+
+
                 const created =
                     normalizeWork(
-                        unwrapData(
-                            response
-                        )
+                        createdWork
                     );
 
 
@@ -2266,21 +2592,13 @@
 
 
             /*
-             * =================================================
-             * BACKEND UPDATE
-             * =================================================
+             * ===============================================
+             * UPDATE
+             * ===============================================
              */
-            else if (
-                state.editingId &&
-                window.ServiceHubAPI &&
-                typeof ServiceHubAPI.updateWork ===
-                    "function"
-            ) {
 
-                /*
-                 * Use FormData because an edited
-                 * project may have new media.
-                 */
+            else {
+
                 const formData =
                     new FormData();
 
@@ -2315,26 +2633,29 @@
 
 
                 formData.append(
-                    "client_name",
-                    $("workClient").value.trim()
+                    "type",
+                    $("workType").value ||
+                    "previous"
                 );
 
 
                 formData.append(
-                    "completion_date",
-                    $("workDate").value || ""
+                    "location",
+                    $("workLocation").value
+                        .trim()
                 );
 
 
                 formData.append(
                     "published",
-                    String(published)
+                    String(
+                        published
+                    )
                 );
 
 
                 /*
-                 * Only newly selected files are
-                 * appended during an edit.
+                 * New media added during edit.
                  */
                 state.selectedMedia.forEach(
                     file => {
@@ -2355,160 +2676,41 @@
                     );
 
 
+                const responseData =
+                    unwrapData(
+                        response
+                    );
+
+
+                const updatedWork =
+                    responseData?.work ||
+                    responseData;
+
+
                 const updated =
                     normalizeWork(
-                        unwrapData(
-                            response
-                        )
+                        updatedWork
                     );
 
 
                 const index =
                     state.work.findIndex(
                         project =>
-                            String(project.id) ===
+                            String(
+                                project.id
+                            ) ===
                             String(
                                 state.editingId
                             )
                     );
 
 
-                if (index !== -1) {
+                if (
+                    index !== -1
+                ) {
 
                     state.work[index] =
                         updated;
-                }
-            }
-
-
-            /*
-             * =================================================
-             * FRONTEND MOCK MODE
-             * =================================================
-             *
-             * There is no permanent file storage yet.
-             * Files remain available for this page session.
-             */
-            else {
-
-                const media =
-                    state.selectedMedia.map(
-                        file => {
-
-                            return {
-                                url:
-                                    URL.createObjectURL(
-                                        file
-                                    ),
-
-                                type:
-                                    file.type,
-
-                                name:
-                                    file.name,
-
-                                size:
-                                    file.size,
-
-                                file
-                            };
-                        }
-                    );
-
-
-                /*
-                 * Keep existing media if editing
-                 * and no replacement was selected.
-                 */
-                const finalMedia =
-                    media.length
-                        ? media
-                        : (
-                            existing?.media ||
-                            []
-                        );
-
-
-                const workData = {
-
-                    id:
-                        state.editingId ||
-                        "local-work-" +
-                        Date.now(),
-
-                    title,
-
-                    category:
-                        $("workCategory").value ||
-                        "Other",
-
-                    description,
-
-                    price:
-                        Number(
-                            $("workPrice").value
-                        ) || 0,
-
-                    client:
-                        $("workClient")
-                            .value
-                            .trim(),
-
-                    completionDate:
-                        $("workDate").value ||
-                        "",
-
-                    published,
-
-                    status:
-                        published
-                            ? "published"
-                            : "draft",
-
-                    media:
-                        finalMedia,
-
-                    createdAt:
-                        existing?.createdAt ||
-                        new Date().toISOString(),
-
-                    updatedAt:
-                        new Date().toISOString()
-                };
-
-
-                if (
-                    state.editingId &&
-                    existing
-                ) {
-
-                    const index =
-                        state.work.findIndex(
-                            project =>
-                                String(
-                                    project.id
-                                ) ===
-                                String(
-                                    state.editingId
-                                )
-                        );
-
-
-                    if (index !== -1) {
-
-                        state.work[index] =
-                            normalizeWork(
-                                workData
-                            );
-                    }
-
-                } else {
-
-                    state.work.unshift(
-                        normalizeWork(
-                            workData
-                        )
-                    );
                 }
             }
 
@@ -2556,10 +2758,12 @@
 
 
     /* =====================================================
-       DELETE
+       DELETE WORK
     ===================================================== */
 
-    async function deleteWork(id) {
+    async function deleteWork(
+        id
+    ) {
 
         const project =
             state.work.find(
@@ -2587,16 +2791,9 @@
 
         try {
 
-            if (
-                window.ServiceHubAPI &&
-                typeof ServiceHubAPI.deleteWork ===
-                    "function"
-            ) {
-
-                await ServiceHubAPI.deleteWork(
-                    id
-                );
-            }
+            await ServiceHubAPI.deleteWork(
+                id
+            );
 
 
             state.work =
@@ -2624,6 +2821,7 @@
 
 
             showAlert(
+                error.message ||
                 "Unable to delete this project.",
                 "danger"
             );
@@ -2632,7 +2830,7 @@
 
 
     /* =====================================================
-       DESCRIPTION COUNT
+       DESCRIPTION COUNTER
     ===================================================== */
 
     function updateDescriptionCount() {
@@ -2645,7 +2843,10 @@
             $("workDescriptionCount");
 
 
-        if (!textarea || !counter) {
+        if (
+            !textarea ||
+            !counter
+        ) {
             return;
         }
 
@@ -2705,9 +2906,7 @@
 
                 await ServiceHubAPI.logout();
 
-            }
-
-            else if (
+            } else if (
                 window.ServiceHubAuth &&
                 typeof ServiceHubAuth.logout ===
                     "function"
@@ -2715,9 +2914,7 @@
 
                 await ServiceHubAuth.logout();
 
-            }
-
-            else if (
+            } else if (
                 window.ServiceHubApp &&
                 typeof ServiceHubApp.logout ===
                     "function"
@@ -2840,7 +3037,8 @@
 
 
                     if (
-                        action === "edit"
+                        action ===
+                        "edit"
                     ) {
 
                         const project =
@@ -2863,18 +3061,18 @@
 
 
                     if (
-                        action === "delete"
+                        action ===
+                        "delete"
                     ) {
 
-                        deleteWork(id);
+                        deleteWork(
+                            id
+                        );
                     }
                 }
             );
 
 
-        /*
-         * Mobile sidebar.
-         */
         $("mobileMenuButton")
             ?.addEventListener(
                 "click",
@@ -2903,15 +3101,13 @@
             );
 
 
-        /*
-         * Escape modal.
-         */
         document.addEventListener(
             "keydown",
             event => {
 
                 if (
-                    event.key === "Escape" &&
+                    event.key ===
+                        "Escape" &&
                     $("workModal")
                         ?.classList.contains(
                             "open"
@@ -2924,9 +3120,6 @@
         );
 
 
-        /*
-         * REAL FILE UPLOAD.
-         */
         setupMediaUpload();
     }
 

@@ -213,6 +213,9 @@
     <main class="dashboard-main">
 
 
+        <!-- =================================================
+             TOPBAR
+        ================================================== -->
         <header class="dashboard-topbar">
 
             <div class="topbar-left">
@@ -245,8 +248,13 @@
             <div class="topbar-right">
 
                 <div class="system-status">
+
                     <span class="status-dot"></span>
-                    <span>System Online</span>
+
+                    <span>
+                        System Online
+                    </span>
+
                 </div>
 
 
@@ -281,20 +289,26 @@
         <div class="dashboard-content work-content">
 
 
+            <!-- PAGE ALERT -->
             <div
                 id="workAlert"
                 class="dashboard-alert d-none"
             ></div>
 
 
-            <!-- PAGE HEADER -->
+            <!-- =================================================
+                 PAGE HEADER
+            ================================================== -->
             <section class="work-page-header">
 
                 <div class="work-header-copy">
 
                     <div class="work-eyebrow">
+
                         <i class="bi bi-images"></i>
+
                         PORTFOLIO
+
                     </div>
 
                     <h2>
@@ -315,85 +329,128 @@
                     id="addWorkButton"
                     class="btn-gold work-add-button"
                 >
+
                     <i class="bi bi-plus-lg"></i>
+
                     Add Work
+
                 </button>
 
             </section>
 
 
-            <!-- STATS -->
+            <!-- =================================================
+                 STATS
+            ================================================== -->
             <section class="work-stats-grid">
 
+
+                <!-- TOTAL -->
                 <div class="work-stat-card">
 
                     <div class="work-stat-icon">
+
                         <i class="bi bi-images"></i>
+
                     </div>
 
                     <div>
-                        <span>Total Projects</span>
+
+                        <span>
+                            Total Projects
+                        </span>
+
                         <strong id="totalWork">
                             0
                         </strong>
+
                     </div>
 
                 </div>
 
 
+                <!-- PUBLISHED -->
                 <div class="work-stat-card">
 
                     <div class="work-stat-icon">
+
                         <i class="bi bi-eye-fill"></i>
+
                     </div>
 
                     <div>
-                        <span>Published</span>
+
+                        <span>
+                            Published
+                        </span>
+
                         <strong id="publishedWork">
                             0
                         </strong>
+
                     </div>
 
                 </div>
 
 
+                <!-- DRAFTS -->
                 <div class="work-stat-card">
 
                     <div class="work-stat-icon">
+
                         <i class="bi bi-pencil-square"></i>
+
                     </div>
 
                     <div>
-                        <span>Drafts</span>
+
+                        <span>
+                            Drafts
+                        </span>
+
                         <strong id="draftWork">
                             0
                         </strong>
+
                     </div>
 
                 </div>
 
 
+                <!-- WITH IMAGES -->
                 <div class="work-stat-card">
 
                     <div class="work-stat-icon">
+
                         <i class="bi bi-folder-check"></i>
+
                     </div>
 
                     <div>
-                        <span>With Images</span>
+
+                        <span>
+                            With Images
+                        </span>
+
                         <strong id="workWithImages">
                             0
                         </strong>
+
                     </div>
 
                 </div>
+
 
             </section>
 
 
-            <!-- TOOLBAR -->
+            <!-- =================================================
+                 TOOLBAR
+            ================================================== -->
             <section class="work-toolbar-card">
 
+
+                <!-- SEARCH -->
                 <div class="work-search">
 
                     <i class="bi bi-search"></i>
@@ -408,6 +465,7 @@
                 </div>
 
 
+                <!-- STATUS FILTER -->
                 <div class="work-filter">
 
                     <label for="workStatusFilter">
@@ -432,11 +490,15 @@
 
                 </div>
 
+
             </section>
 
 
-            <!-- WORK GRID -->
+            <!-- =================================================
+                 WORK GRID
+            ================================================== -->
             <section>
+
 
                 <div
                     id="workGrid"
@@ -444,13 +506,16 @@
                 ></div>
 
 
+                <!-- EMPTY -->
                 <div
                     id="workEmpty"
                     class="work-empty d-none"
                 >
 
                     <div class="work-empty-icon">
+
                         <i class="bi bi-images"></i>
+
                     </div>
 
                     <h3>
@@ -467,20 +532,26 @@
                         id="emptyAddWorkButton"
                         class="btn-gold"
                     >
+
                         <i class="bi bi-plus-lg"></i>
+
                         Add Your First Project
+
                     </button>
 
                 </div>
 
 
+                <!-- NO SEARCH RESULTS -->
                 <div
                     id="workNoResults"
                     class="work-empty d-none"
                 >
 
                     <div class="work-empty-icon">
+
                         <i class="bi bi-search"></i>
+
                     </div>
 
                     <h3>
@@ -493,7 +564,9 @@
 
                 </div>
 
+
             </section>
+
 
         </div>
 
@@ -509,9 +582,12 @@
         aria-hidden="true"
     >
 
+
+        <!-- BACKDROP -->
         <div class="work-modal-backdrop"></div>
 
 
+        <!-- DIALOG -->
         <div
             class="work-modal-dialog"
             role="dialog"
@@ -519,6 +595,10 @@
             aria-labelledby="workModalTitle"
         >
 
+
+            <!-- =================================================
+                 MODAL HEADER
+            ================================================== -->
             <div class="work-modal-header">
 
                 <div>
@@ -540,14 +620,20 @@
                     class="work-modal-close"
                     aria-label="Close"
                 >
+
                     <i class="bi bi-x-lg"></i>
+
                 </button>
 
             </div>
 
 
+            <!-- =================================================
+                 WORK FORM
+            ================================================== -->
             <form id="workForm">
 
+                <!-- WORK ID -->
                 <input
                     type="hidden"
                     id="workId"
@@ -556,11 +642,18 @@
 
                 <div class="work-form-body">
 
+
+                    <!-- =================================================
+                         PROJECT TITLE
+                    ================================================== -->
                     <div class="work-form-group">
 
                         <label for="workTitle">
+
                             Project Title
+
                             <span>*</span>
+
                         </label>
 
                         <input
@@ -574,8 +667,13 @@
                     </div>
 
 
+                    <!-- =================================================
+                         CATEGORY + WORK TYPE
+                    ================================================== -->
                     <div class="work-form-row">
 
+
+                        <!-- CATEGORY -->
                         <div class="work-form-group">
 
                             <label for="workCategory">
@@ -625,27 +723,54 @@
                         </div>
 
 
+                        <!-- WORK TYPE -->
                         <div class="work-form-group">
 
-                            <label for="workDate">
-                                Completion Date
+                            <label for="workType">
+                                Work Type
                             </label>
 
-                            <input
-                                type="date"
-                                id="workDate"
-                            >
+                            <select id="workType">
+
+                                <option value="previous">
+                                    Previous Work
+                                </option>
+
+                                <option value="current">
+                                    Current Work
+                                </option>
+
+                                <option value="project">
+                                    Project
+                                </option>
+
+                                <option value="completed">
+                                    Completed Job
+                                </option>
+
+                                <option value="other">
+                                    Other
+                                </option>
+
+                            </select>
 
                         </div>
+
 
                     </div>
 
 
+                    <!-- =================================================
+                         DESCRIPTION
+                    ================================================== -->
                     <div class="work-form-group">
 
                         <label for="workDescription">
+
                             Project Description
+
                             <span>*</span>
+
                         </label>
 
                         <textarea
@@ -656,86 +781,123 @@
                             required
                         ></textarea>
 
+
                         <div class="work-character-count">
-                            <span id="workDescriptionCount">0</span>/1200
+
+                            <span id="workDescriptionCount">
+                                0
+                            </span>/1200
+
                         </div>
 
                     </div>
 
 
-                 <!-- =====================================================
-     PROJECT MEDIA UPLOAD
-====================================================== -->
-<div class="work-form-group">
+                    <!-- =================================================
+                         PROJECT MEDIA UPLOAD
+                    ================================================== -->
+                    <div class="work-form-group">
 
-    <label>
-        Project Media
-        <span>*</span>
-    </label>
+                        <label>
 
-    <div
-        id="workMediaDropzone"
-        class="work-media-dropzone"
-    >
+                            Project Media
 
-        <div class="work-upload-icon">
-            <i class="bi bi-cloud-arrow-up"></i>
-        </div>
+                            <span>*</span>
 
-        <h4>
-            Upload Images or Videos
-        </h4>
-
-        <p>
-            Add photos or videos showing your completed work.
-        </p>
-
-        <label
-            for="workMediaInput"
-            class="btn-gold work-upload-button"
-        >
-            <i class="bi bi-plus-lg"></i>
-            Choose Files
-        </label>
-
-        <input
-            type="file"
-            id="workMediaInput"
-            accept="image/jpeg,image/png,image/webp,image/gif,video/mp4,video/webm,video/quicktime"
-            multiple
-            hidden
-        >
-
-        <small>
-            JPG, PNG, WEBP, GIF, MP4, WEBM or MOV
-        </small>
-
-    </div>
+                        </label>
 
 
-    <!-- SELECTED MEDIA PREVIEW -->
-    <div
-        id="workMediaPreview"
-        class="work-media-preview"
-    ></div>
+                        <div
+                            id="workMediaDropzone"
+                            class="work-media-dropzone"
+                        >
 
 
-    <div
-        id="workMediaHelp"
-        class="work-media-help"
-    >
-        <i class="bi bi-info-circle"></i>
+                            <div class="work-upload-icon">
 
-        <span>
-            You can select multiple images and videos for one project.
-        </span>
-    </div>
+                                <i class="bi bi-cloud-arrow-up"></i>
 
-</div>
+                            </div>
 
 
+                            <h4>
+                                Upload Images or Videos
+                            </h4>
+
+
+                            <p>
+                                Add photos or videos showing your completed work.
+                            </p>
+
+
+                            <label
+                                for="workMediaInput"
+                                class="btn-gold work-upload-button"
+                            >
+
+                                <i class="bi bi-plus-lg"></i>
+
+                                Choose Files
+
+                            </label>
+
+
+                            <input
+                                type="file"
+                                id="workMediaInput"
+                                accept="image/jpeg,image/png,image/webp,image/gif,video/mp4,video/webm,video/quicktime"
+                                multiple
+                                hidden
+                            >
+
+
+                            <small>
+                                JPG, PNG, WEBP, GIF, MP4, WEBM or MOV
+                            </small>
+
+
+                        </div>
+
+
+                        <!-- SELECTED MEDIA PREVIEW -->
+                        <div
+                            id="workMediaPreview"
+                            class="work-media-preview"
+                        ></div>
+
+
+                        <!-- EXISTING MEDIA -->
+                        <div
+                            id="existingWorkMedia"
+                            class="work-media-preview"
+                        ></div>
+
+
+                        <!-- MEDIA HELP -->
+                        <div
+                            id="workMediaHelp"
+                            class="work-media-help"
+                        >
+
+                            <i class="bi bi-info-circle"></i>
+
+                            <span>
+                                You can select multiple images and videos for one project.
+                            </span>
+
+                        </div>
+
+
+                    </div>
+
+
+                    <!-- =================================================
+                         PRICE + LOCATION
+                    ================================================== -->
                     <div class="work-form-row">
 
+
+                        <!-- PROJECT VALUE -->
                         <div class="work-form-group">
 
                             <label for="workPrice">
@@ -744,7 +906,9 @@
 
                             <div class="work-price-input">
 
-                                <span>₦</span>
+                                <span>
+                                    ₦
+                                </span>
 
                                 <input
                                     type="number"
@@ -759,25 +923,31 @@
                         </div>
 
 
+                        <!-- LOCATION -->
                         <div class="work-form-group">
 
-                            <label for="workClient">
-                                Client / Company
+                            <label for="workLocation">
+                                Location
                             </label>
 
                             <input
                                 type="text"
-                                id="workClient"
-                                placeholder="e.g. ABC Company"
-                                maxlength="120"
+                                id="workLocation"
+                                placeholder="e.g. Port Harcourt, Lagos or Remote"
+                                maxlength="150"
                             >
 
                         </div>
 
+
                     </div>
 
 
+                    <!-- =================================================
+                         PUBLISH CONTROL
+                    ================================================== -->
                     <div class="work-status-control">
+
 
                         <div class="work-status-copy">
 
@@ -805,33 +975,48 @@
 
                         </label>
 
+
                     </div>
+
 
                 </div>
 
 
+                <!-- =================================================
+                     MODAL FOOTER
+                ================================================== -->
                 <div class="work-modal-footer">
+
 
                     <button
                         type="button"
                         id="cancelWorkButton"
                         class="btn-outline-dark-custom"
                     >
+
                         Cancel
+
                     </button>
+
 
                     <button
                         type="submit"
                         id="saveWorkButton"
                         class="btn-gold"
                     >
+
                         <i class="bi bi-check-lg"></i>
+
                         Save Project
+
                     </button>
+
 
                 </div>
 
+
             </form>
+
 
         </div>
 
@@ -841,14 +1026,23 @@
     <!-- =====================================================
          SCRIPTS
     ====================================================== -->
+
     <script src="./js/config.js"></script>
+
     <script src="./js/api.js"></script>
+
     <script src="./js/auth.js"></script>
+
     <script src="./js/app.js"></script>
 
     <script src="./js/work.js"></script>
 
-    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
+
+    <!-- Bootstrap JS -->
+    <script
+        src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"
+    ></script>
+
 
 </body>
 </html>

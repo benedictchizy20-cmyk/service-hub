@@ -2,16 +2,16 @@
    SERVICEHUB - PROFILE PICTURE
    =========================================================
    PURPOSE:
-   - Allow provider to select a profile picture
-   - Preview image immediately
-   - Keep existing profile page functionality untouched
+   - Upload provider profile picture to backend
+   - Store image in Supabase Storage
+   - Save image URL in profiles.profile_image
+   - Load saved image from backend after refresh
    - Sync profile avatar with sidebar/topbar
-   - Temporarily store image in browser
-   - Ready for backend storage later
+   - Keep existing profile.js functionality untouched
 
-   IMPORTANT:
-   This file works alongside profile.js.
-   It does NOT replace profile.js.
+   BACKEND:
+   POST   /api/profile/images
+   DELETE /api/profile/images/profile
 ========================================================= */
 
 (function () {
@@ -20,11 +20,18 @@
 
 
     /* =====================================================
-       STORAGE KEY
+       API CONFIGURATION
     ===================================================== */
 
-    const PROFILE_PICTURE_STORAGE_KEY =
-        "servicehub_profile_picture";
+    /*
+     * ServiceHub backend.
+     *
+     * If your existing config.js already exposes the API URL,
+     * replace this with that existing variable instead.
+     */
+
+    const API_BASE_URL =
+        "http://localhost:7000/api";
 
 
     /* =====================================================
@@ -32,13 +39,17 @@
     ===================================================== */
 
     let profilePicture;
+
     let profilePictureInput;
+
     let changeProfilePictureButton;
 
     let profilePictureImage;
+
     let profileInitials;
 
     let sidebarAvatar;
+
     let topbarProfileAvatar;
 
 
@@ -46,13 +57,17 @@
        INITIALIZE
     ===================================================== */
 
-    function initProfilePicture() {
+    async function initProfilePicture() {
 
         profilePicture =
-            document.getElementById("profilePicture");
+            document.getElementById(
+                "profilePicture"
+            );
 
         profilePictureInput =
-            document.getElementById("profilePictureInput");
+            document.getElementById(
+                "profilePictureInput"
+            );
 
         changeProfilePictureButton =
             document.getElementById(
@@ -123,10 +138,10 @@
 
 
         /* =================================================
-           LOAD EXISTING PICTURE
+           LOAD PROFILE FROM BACKEND
         ================================================= */
 
-        loadStoredProfilePicture();
+        await loadProfilePictureFromBackend();
 
     }
 
@@ -135,7 +150,7 @@
        HANDLE IMAGE SELECTION
     ===================================================== */
 
-    function handleProfilePictureSelected(event) {
+    async function handleProfilePictureSelected(event) {
 
         const file =
             event.target.files &&
@@ -151,10 +166,21 @@
            VALIDATE FILE TYPE
         ================================================= */
 
-        if (!file.type.startsWith("image/")) {
+        const allowedTypes = [
+            "image/jpeg",
+            "image/png",
+            "image/webp"
+        ];
+
+
+        if (
+            !allowedTypes.includes(
+                file.type
+            )
+        ) {
 
             showProfilePictureMessage(
-                "Please select an image file."
+                "Only JPG, PNG, and WEBP images are allowed."
             );
 
             profilePictureInput.value = "";
@@ -165,14 +191,16 @@
 
         /* =================================================
            VALIDATE FILE SIZE
-           Maximum: 5MB
         ================================================= */
 
         const maximumSize =
             5 * 1024 * 1024;
 
 
-        if (file.size > maximumSize) {
+        if (
+            file.size >
+            maximumSize
+        ) {
 
             showProfilePictureMessage(
                 "Profile picture must be 5MB or smaller."
@@ -185,75 +213,290 @@
 
 
         /* =================================================
-           READ IMAGE
+           IMMEDIATE PREVIEW
         ================================================= */
 
         const reader =
             new FileReader();
 
 
-        reader.onload = function (readerEvent) {
+        reader.onload =
+            function (readerEvent) {
 
-            const imageData =
-                readerEvent.target.result;
+                const imageData =
+                    readerEvent.target.result;
 
 
-            /* =============================================
-               PREVIEW
-            ============================================= */
+                displayProfilePicture(
+                    imageData
+                );
 
-            displayProfilePicture(
-                imageData
+            };
+
+
+        reader.onerror =
+            function () {
+
+                showProfilePictureMessage(
+                    "Unable to preview the selected image."
+                );
+
+            };
+
+
+        reader.readAsDataURL(file);
+
+
+        /* =================================================
+           UPLOAD TO BACKEND
+        ================================================= */
+
+        await uploadProfilePicture(
+            file
+        );
+
+    }
+
+
+    /* =====================================================
+       UPLOAD PROFILE PICTURE
+    ===================================================== */
+
+    async function uploadProfilePicture(file) {
+
+        try {
+
+            showProfilePictureMessage(
+                "Uploading profile picture..."
             );
 
 
             /* =============================================
-               TEMPORARY STORAGE
+               CREATE FORM DATA
             ============================================= */
+
+            const formData =
+                new FormData();
+
+
+            formData.append(
+                "image",
+                file
+            );
+
+
+            formData.append(
+                "image_type",
+                "profile"
+            );
+
+
+            /* =============================================
+               SEND TO BACKEND
+            ============================================= */
+
+            const response =
+                await fetch(
+                    `${API_BASE_URL}/profile/images`,
+                    {
+
+                        method:
+                            "POST",
+
+                        credentials:
+                            "include",
+
+                        body:
+                            formData
+
+                    }
+                );
+
+
+            /* =============================================
+               READ RESPONSE
+            ============================================= */
+
+            let result = null;
+
 
             try {
 
-                localStorage.setItem(
-                    PROFILE_PICTURE_STORAGE_KEY,
-                    imageData
+                result =
+                    await response.json();
+
+            } catch (jsonError) {
+
+                console.warn(
+                    "ServiceHub: Unable to read upload response.",
+                    jsonError
                 );
 
-            } catch (error) {
-
-                console.error(
-                    "Unable to store profile picture:",
-                    error
-                );
-
-                showProfilePictureMessage(
-                    "Image selected, but could not be saved in the browser."
-                );
-
-                return;
             }
 
 
             /* =============================================
-               SUCCESS MESSAGE
+               HANDLE ERROR
+            ============================================= */
+
+            if (!response.ok) {
+
+                console.error(
+                    "PROFILE IMAGE UPLOAD ERROR:",
+                    result
+                );
+
+
+                showProfilePictureMessage(
+
+                    result?.message ||
+                    "Unable to upload profile picture."
+
+                );
+
+
+                return;
+
+            }
+
+
+            /* =============================================
+               USE SAVED STORAGE URL
+            ============================================= */
+
+            if (
+                result &&
+                result.image_url
+            ) {
+
+                displayProfilePicture(
+                    result.image_url
+                );
+
+            }
+
+
+            /* =============================================
+               SUCCESS
             ============================================= */
 
             showProfilePictureMessage(
-                "Profile picture updated."
+                "Profile picture updated successfully."
             );
 
-        };
 
+        } catch (error) {
 
-        reader.onerror = function () {
+            console.error(
+                "PROFILE IMAGE UPLOAD NETWORK ERROR:",
+                error
+            );
+
 
             showProfilePictureMessage(
-                "Unable to read the selected image."
+                "Unable to connect to the ServiceHub server."
             );
 
-        };
+        }
+
+    }
 
 
-        reader.readAsDataURL(file);
+    /* =====================================================
+       LOAD PROFILE PICTURE FROM BACKEND
+    ===================================================== */
+
+    async function loadProfilePictureFromBackend() {
+
+        try {
+
+            const response =
+                await fetch(
+                    `${API_BASE_URL}/profile`,
+                    {
+
+                        method:
+                            "GET",
+
+                        credentials:
+                            "include"
+
+                    }
+                );
+
+
+            let result = null;
+
+
+            try {
+
+                result =
+                    await response.json();
+
+            } catch (jsonError) {
+
+                console.warn(
+                    "ServiceHub: Unable to read profile response.",
+                    jsonError
+                );
+
+            }
+
+
+            /* =============================================
+               AUTH / PROFILE ERROR
+            ============================================= */
+
+            if (!response.ok) {
+
+                console.warn(
+                    "ServiceHub: Unable to load profile picture.",
+                    result
+                );
+
+                return;
+
+            }
+
+
+            /* =============================================
+               GET PROFILE IMAGE
+            ============================================= */
+
+            const imageUrl =
+                result?.profile?.profile_image;
+
+
+            if (!imageUrl) {
+
+                /*
+                 * No saved profile image.
+                 *
+                 * Keep the initials/default avatar.
+                 */
+
+                return;
+
+            }
+
+
+            /* =============================================
+               DISPLAY SAVED IMAGE
+            ============================================= */
+
+            displayProfilePicture(
+                imageUrl
+            );
+
+
+        } catch (error) {
+
+            console.error(
+                "LOAD PROFILE PICTURE ERROR:",
+                error
+            );
+
+        }
 
     }
 
@@ -280,6 +523,7 @@
 
             profilePictureImage.style.display =
                 "block";
+
         }
 
 
@@ -291,6 +535,7 @@
 
             profileInitials.style.display =
                 "none";
+
         }
 
 
@@ -325,41 +570,66 @@
         imageData
     ) {
 
-        if (!element || !imageData) {
+        if (
+            !element ||
+            !imageData
+        ) {
+
             return;
+
         }
 
 
-        /* Remove existing icon */
+        /* =================================================
+           HIDE EXISTING ICON
+        ================================================= */
+
         const icon =
             element.querySelector("i");
 
+
         if (icon) {
-            icon.style.display = "none";
+
+            icon.style.display =
+                "none";
+
         }
 
 
-        /* Remove existing profile image */
+        /* =================================================
+           REMOVE OLD IMAGE
+        ================================================= */
+
         const oldImage =
             element.querySelector(
                 ".servicehub-avatar-image"
             );
 
+
         if (oldImage) {
+
             oldImage.remove();
+
         }
 
 
-        /* Create image */
+        /* =================================================
+           CREATE IMAGE
+        ================================================= */
+
         const image =
-            document.createElement("img");
+            document.createElement(
+                "img"
+            );
 
 
         image.src =
             imageData;
 
+
         image.alt =
             "Profile picture";
+
 
         image.className =
             "servicehub-avatar-image";
@@ -368,11 +638,14 @@
         image.style.width =
             "100%";
 
+
         image.style.height =
             "100%";
 
+
         image.style.objectFit =
             "cover";
+
 
         image.style.borderRadius =
             "50%";
@@ -380,45 +653,6 @@
 
         element.appendChild(
             image
-        );
-
-    }
-
-
-    /* =====================================================
-       LOAD STORED PROFILE PICTURE
-    ===================================================== */
-
-    function loadStoredProfilePicture() {
-
-        let imageData = null;
-
-
-        try {
-
-            imageData =
-                localStorage.getItem(
-                    PROFILE_PICTURE_STORAGE_KEY
-                );
-
-        } catch (error) {
-
-            console.warn(
-                "Unable to read stored profile picture.",
-                error
-            );
-
-            return;
-        }
-
-
-        if (!imageData) {
-            return;
-        }
-
-
-        displayProfilePicture(
-            imageData
         );
 
     }
@@ -438,15 +672,11 @@
         );
 
 
-        /*
-         * Use the existing ServiceHub toast
-         * if it exists.
-         */
-
         const toastElement =
             document.getElementById(
                 "profileToast"
             );
+
 
         const toastMessage =
             document.getElementById(
@@ -473,10 +703,10 @@
             toast.show();
 
             return;
+
         }
 
 
-        /* Fallback */
         console.log(
             message
         );

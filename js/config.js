@@ -16,7 +16,7 @@ const APP_CONFIG = {
        TRUE = use frontend development/mock data
        FALSE = connect to real backend
     */
-    USE_MOCK_BACKEND: true,
+    USE_MOCK_BACKEND:false ,
 
     /*
        Real backend - we will use this later

@@ -1,17 +1,27 @@
 /* =========================================================
    SERVICEHUB - SERVICES PAGE
-   Frontend / mock-ready
-   Backend-ready API detection
+   REAL BACKEND / SUPABASE READY
    ========================================================= */
 
-(function () {
+// (function () {
+
     "use strict";
 
+
+    /* =====================================================
+       STATE
+    ===================================================== */
+
     const state = {
+
         user: null,
+
         services: [],
+
         filteredServices: [],
+
         editingId: null
+
     };
 
 
@@ -20,16 +30,21 @@
     ===================================================== */
 
     function $(id) {
+
         return document.getElementById(id);
+
     }
 
 
     function firstDefined(...values) {
+
         return values.find(
-            value => value !== undefined &&
-                     value !== null &&
-                     value !== ""
+            value =>
+                value !== undefined &&
+                value !== null &&
+                value !== ""
         );
+
     }
 
 
@@ -39,196 +54,406 @@
             return null;
         }
 
-        if (response.data !== undefined) {
+        if (
+            response.data !== undefined
+        ) {
             return response.data;
         }
 
-        if (response.result !== undefined) {
+        if (
+            response.result !== undefined
+        ) {
             return response.result;
         }
 
         return response;
+
     }
 
 
     function extractArray(response) {
 
-        const data = unwrapData(response);
+        const data =
+            unwrapData(response);
+
 
         if (Array.isArray(data)) {
+
             return data;
+
         }
 
-        if (data && Array.isArray(data.services)) {
+
+        if (
+            data &&
+            Array.isArray(data.services)
+        ) {
+
             return data.services;
+
         }
 
-        if (data && Array.isArray(data.items)) {
+
+        if (
+            data &&
+            Array.isArray(data.items)
+        ) {
+
             return data.items;
+
         }
 
-        if (data && Array.isArray(data.results)) {
+
+        if (
+            data &&
+            Array.isArray(data.results)
+        ) {
+
             return data.results;
+
         }
+
 
         return [];
+
     }
 
 
     function escapeHTML(value) {
 
         return String(value ?? "")
+
             .replace(/&/g, "&amp;")
+
             .replace(/</g, "&lt;")
+
             .replace(/>/g, "&gt;")
+
             .replace(/"/g, "&quot;")
+
             .replace(/'/g, "&#039;");
+
     }
 
 
     function getInitials(name) {
 
-        const value = String(name || "ServiceHub")
-            .trim()
-            .split(/\s+/)
-            .filter(Boolean);
+        const value =
+            String(
+                name || "ServiceHub"
+            )
+                .trim()
+                .split(/\s+/)
+                .filter(Boolean);
+
 
         if (!value.length) {
+
             return "SH";
+
         }
+
 
         if (value.length === 1) {
-            return value[0].slice(0, 2).toUpperCase();
+
+            return value[0]
+                .slice(0, 2)
+                .toUpperCase();
+
         }
 
+
         return (
+
             value[0].charAt(0) +
-            value[value.length - 1].charAt(0)
+
+            value[value.length - 1]
+                .charAt(0)
+
         ).toUpperCase();
+
     }
 
 
-    function formatPrice(value) {
+    /* =====================================================
+       UUID VALIDATION
+       ===================================================== */
 
-        const number = Number(value);
+    function isValidUUID(value) {
 
-        if (!Number.isFinite(number) || number <= 0) {
-            return "Contact";
+        if (!value) {
+
+            return false;
+
         }
 
-        return new Intl.NumberFormat("en-NG", {
-            style: "currency",
-            currency: "NGN",
-            maximumFractionDigits: 0
-        }).format(number);
+
+        const uuid =
+            String(value).trim();
+
+
+        return /^[0-9a-f]{8}-[0-9a-f]{4}-[1-5][0-9a-f]{3}-[89ab][0-9a-f]{3}-[0-9a-f]{12}$/i
+            .test(uuid);
+
+    }
+
+
+    /* =====================================================
+       PRICE
+    ===================================================== */
+
+    function formatPrice(value) {
+
+        const number =
+            Number(value);
+
+
+        if (
+            !Number.isFinite(number) ||
+            number <= 0
+        ) {
+
+            return "Contact";
+
+        }
+
+
+        return new Intl.NumberFormat(
+            "en-NG",
+            {
+                style: "currency",
+                currency: "NGN",
+                maximumFractionDigits: 0
+            }
+        ).format(number);
+
     }
 
 
     function formatAveragePrice(value) {
 
-        const number = Number(value);
+        const number =
+            Number(value);
 
-        if (!Number.isFinite(number) || number <= 0) {
+
+        if (
+            !Number.isFinite(number) ||
+            number <= 0
+        ) {
+
             return "₦0";
+
         }
 
-        return new Intl.NumberFormat("en-NG", {
-            style: "currency",
-            currency: "NGN",
-            maximumFractionDigits: 0
-        }).format(number);
+
+        return new Intl.NumberFormat(
+            "en-NG",
+            {
+                style: "currency",
+                currency: "NGN",
+                maximumFractionDigits: 0
+            }
+        ).format(number);
+
     }
 
+
+    /* =====================================================
+       NORMALIZE SERVICE
+       ===================================================== */
 
     function normalizeService(service) {
 
-        service = service || {};
+        service =
+            service || {};
+
+
+        const rawId =
+            firstDefined(
+                service.id,
+                service.service_id
+            );
+
+
+        /*
+         * IMPORTANT:
+         *
+         * Do NOT generate a fake ID.
+         *
+         * Supabase services.id is a UUID.
+         */
+
+        const id =
+            isValidUUID(rawId)
+                ? String(rawId)
+                : null;
+
 
         return {
-            id: firstDefined(
-                service.id,
-                service._id,
-                service.service_id
-            ) || ("service-" + Date.now() + "-" + Math.random()),
 
-            name: firstDefined(
-                service.name,
-                service.title,
-                service.service_name
-            ) || "Untitled Service",
+            id,
 
-            category: firstDefined(
-                service.category,
-                service.type
-            ) || "Other",
+            name:
+                firstDefined(
+                    service.name,
+                    service.title,
+                    service.service_name
+                ) ||
+                "Untitled Service",
 
-            description: firstDefined(
-                service.description,
-                service.details
-            ) || "",
 
-            price: firstDefined(
-                service.price,
-                service.amount,
-                service.starting_price
-            ) || 0,
+            category:
+                firstDefined(
+                    service.category,
+                    service.type
+                ) ||
+                "Other",
 
-            currency: firstDefined(
-                service.currency
-            ) || "NGN",
 
-            pricingType: firstDefined(
-                service.pricingType,
-                service.pricing_type
-            ) || "fixed",
+            description:
+                firstDefined(
+                    service.description,
+                    service.details
+                ) ||
+                "",
 
-            duration: firstDefined(
-                service.duration,
-                service.estimated_duration
-            ) || "",
 
-            active: service.active !== undefined
-                ? Boolean(service.active)
-                : service.is_active !== undefined
-                    ? Boolean(service.is_active)
-                    : true,
+            price:
+                firstDefined(
+                    service.price,
+                    service.amount,
+                    service.starting_price
+                ) || 0,
 
-            createdAt: firstDefined(
-                service.createdAt,
-                service.created_at
-            ) || new Date().toISOString(),
 
-            updatedAt: firstDefined(
-                service.updatedAt,
-                service.updated_at
-            ) || new Date().toISOString()
+            /*
+             * Database column:
+             *
+             * price_type
+             */
+
+            pricingType:
+                firstDefined(
+                    service.price_type,
+                    service.pricingType
+                ) ||
+                "fixed",
+
+
+            duration:
+                firstDefined(
+                    service.duration,
+                    service.estimated_duration
+                ) ||
+                "",
+
+
+            /*
+             * Database column:
+             *
+             * active
+             */
+
+            active:
+                service.active !== undefined
+
+                    ? Boolean(
+                        service.active
+                    )
+
+                    : service.is_active !== undefined
+
+                        ? Boolean(
+                            service.is_active
+                        )
+
+                        : true,
+
+
+            image:
+                firstDefined(
+                    service.image
+                ) || null,
+
+
+            createdAt:
+                firstDefined(
+                    service.created_at,
+                    service.createdAt
+                ) ||
+                null,
+
+
+            updatedAt:
+                firstDefined(
+                    service.updated_at,
+                    service.updatedAt
+                ) ||
+                null
+
         };
+
     }
 
 
-    function showAlert(message, type = "success") {
+    /* =====================================================
+       ALERT
+    ===================================================== */
 
-        const alert = $("servicesAlert");
+    function showAlert(
+        message,
+        type = "success"
+    ) {
+
+        const alert =
+            $("servicesAlert");
+
 
         if (!alert) {
+
             return;
+
         }
+
 
         alert.className =
             "dashboard-alert " +
-            (type === "danger"
-                ? "dashboard-alert-danger"
-                : "dashboard-alert-success");
 
-        alert.textContent = message;
+            (
+                type === "danger"
 
-        alert.classList.remove("d-none");
+                    ? "dashboard-alert-danger"
 
-        window.clearTimeout(showAlert.timer);
+                    : "dashboard-alert-success"
+            );
 
-        showAlert.timer = window.setTimeout(() => {
-            alert.classList.add("d-none");
-        }, 4000);
+
+        alert.textContent =
+            message;
+
+
+        alert.classList.remove(
+            "d-none"
+        );
+
+
+        window.clearTimeout(
+            showAlert.timer
+        );
+
+
+        showAlert.timer =
+            window.setTimeout(
+                () => {
+
+                    alert.classList.add(
+                        "d-none"
+                    );
+
+                },
+                4000
+            );
+
     }
 
 
@@ -242,18 +467,25 @@
 
             if (
                 window.ServiceHubAPI &&
-                typeof ServiceHubAPI.getCurrentUser === "function"
+                typeof ServiceHubAPI.getCurrentUser ===
+                    "function"
             ) {
 
                 const response =
                     await ServiceHubAPI.getCurrentUser();
 
-                state.user = unwrapData(response) || response;
+
+                state.user =
+                    unwrapData(
+                        response
+                    ) || response;
+
             }
 
             else if (
                 window.ServiceHubAuth &&
-                typeof ServiceHubAuth.getCurrentUser === "function"
+                typeof ServiceHubAuth.getCurrentUser ===
+                    "function"
             ) {
 
                 state.user =
@@ -267,14 +499,18 @@
 
             }
 
-        } catch (error) {
+        }
+
+        catch (error) {
 
             console.error(
                 "ServiceHub Services: unable to load user",
                 error
             );
 
+
             state.user = null;
+
         }
 
 
@@ -283,56 +519,95 @@
             const currentPath =
                 window.location.pathname;
 
-            if (!currentPath.includes("login.html")) {
-                window.location.href = "./login.html";
+
+            if (
+                !currentPath.includes(
+                    "login.html"
+                )
+            ) {
+
+                window.location.href =
+                    "./login.html";
+
+
                 return false;
+
             }
+
         }
 
+
         return true;
+
     }
 
 
+    /* =====================================================
+       RENDER USER
+    ===================================================== */
+
     function renderUser() {
 
-        const user = state.user || {};
-
-        const name = firstDefined(
-            user.full_name,
-            user.fullName,
-            user.name,
-            user.username,
-            user.email
-        ) || "ServiceHub User";
+        const user =
+            state.user || {};
 
 
-        const role = firstDefined(
-            user.role,
-            user.user_type,
-            user.account_type,
-            user.type
-        ) || "Provider";
+        const name =
+            firstDefined(
+                user.full_name,
+                user.fullName,
+                user.name,
+                user.username,
+                user.email
+            ) ||
+            "ServiceHub User";
 
 
-        const initials = getInitials(name);
+        const role =
+            firstDefined(
+                user.role,
+                user.user_type,
+                user.account_type,
+                user.type
+            ) ||
+            "Provider";
 
 
-        const sidebarName = $("sidebarUserName");
+        const initials =
+            getInitials(name);
+
+
+        const sidebarName =
+            $("sidebarUserName");
+
 
         if (sidebarName) {
-            sidebarName.textContent = name;
+
+            sidebarName.textContent =
+                name;
+
         }
 
 
-        const sidebarType = $("sidebarUserType");
+        const sidebarType =
+            $("sidebarUserType");
+
 
         if (sidebarType) {
+
             sidebarType.textContent =
-                String(role).replace(/_/g, " ");
+                String(role)
+                    .replace(
+                        /_/g,
+                        " "
+                    );
+
         }
 
 
-        const sidebarAvatar = $("sidebarAvatar");
+        const sidebarAvatar =
+            $("sidebarAvatar");
+
 
         if (sidebarAvatar) {
 
@@ -345,6 +620,7 @@
                     user.photo
                 );
 
+
             if (image) {
 
                 sidebarAvatar.innerHTML =
@@ -352,24 +628,35 @@
                     escapeHTML(image) +
                     '" alt="Profile">';
 
-            } else {
+            }
+
+            else {
 
                 sidebarAvatar.innerHTML =
-                    '<span>' +
+                    "<span>" +
                     escapeHTML(initials) +
                     "</span>";
+
             }
+
         }
 
 
-        const topbarName = $("topbarUserName");
+        const topbarName =
+            $("topbarUserName");
+
 
         if (topbarName) {
-            topbarName.textContent = name;
+
+            topbarName.textContent =
+                name;
+
         }
 
 
-        const topbarAvatar = $("topbarAvatar");
+        const topbarAvatar =
+            $("topbarAvatar");
+
 
         if (topbarAvatar) {
 
@@ -382,6 +669,7 @@
                     user.photo
                 );
 
+
             if (image) {
 
                 topbarAvatar.innerHTML =
@@ -389,20 +677,25 @@
                     escapeHTML(image) +
                     '" alt="Profile">';
 
-            } else {
+            }
+
+            else {
 
                 topbarAvatar.innerHTML =
-                    '<span>' +
+                    "<span>" +
                     escapeHTML(initials) +
                     "</span>";
+
             }
+
         }
+
     }
 
 
     /* =====================================================
        LOAD SERVICES
-    ===================================================== */
+       ===================================================== */
 
     async function loadServices() {
 
@@ -412,44 +705,88 @@
         try {
 
             if (
-                window.ServiceHubAPI &&
-                typeof ServiceHubAPI.getServices === "function"
+                !window.ServiceHubAPI ||
+                typeof ServiceHubAPI.getServices !==
+                    "function"
             ) {
 
-                const response =
-                    await ServiceHubAPI.getServices();
-
-                state.services =
-                    extractArray(response)
-                        .map(normalizeService);
+                throw new Error(
+                    "Service API is not available."
+                );
 
             }
 
-            else {
 
-                /*
-                 * No backend endpoint yet.
-                 * The page starts empty and allows frontend
-                 * interaction until the API is connected.
-                 */
-                state.services = [];
+            const response =
+                await ServiceHubAPI.getServices();
+
+
+            const rawServices =
+                extractArray(response);
+
+
+            const normalized =
+                rawServices.map(
+                    normalizeService
+                );
+
+
+            /*
+             * Only keep services that have
+             * a real Supabase UUID.
+             *
+             * This prevents old mock records
+             * from entering the edit/delete flow.
+             */
+
+            state.services =
+                normalized.filter(
+                    service =>
+                        isValidUUID(
+                            service.id
+                        )
+                );
+
+
+            /*
+             * If old mock records are still
+             * coming from the API, warn clearly.
+             */
+
+            if (
+                normalized.length &&
+                state.services.length !==
+                    normalized.length
+            ) {
+
+                console.warn(
+                    "ServiceHub: ignored service records without valid Supabase UUIDs.",
+                    normalized
+                );
+
             }
 
-        } catch (error) {
+        }
+
+        catch (error) {
 
             console.error(
                 "ServiceHub Services: load error",
                 error
             );
 
+
             showAlert(
+                error?.message ||
                 "Unable to load services.",
                 "danger"
             );
+
         }
 
 
         renderAll();
+
     }
 
 
@@ -461,33 +798,61 @@
 
         const search =
             String(
-                $("serviceSearch")?.value || ""
+                $("serviceSearch")?.value ||
+                ""
             )
                 .trim()
                 .toLowerCase();
 
 
         const status =
-            $("serviceStatusFilter")?.value || "all";
+            $("serviceStatusFilter")?.value ||
+            "all";
 
 
-        return state.services.filter(service => {
+        return state.services.filter(
+            service => {
 
-            const matchesSearch =
-                !search ||
-                service.name.toLowerCase().includes(search) ||
-                service.description.toLowerCase().includes(search) ||
-                service.category.toLowerCase().includes(search);
+                const matchesSearch =
+
+                    !search ||
+
+                    service.name
+                        .toLowerCase()
+                        .includes(search) ||
+
+                    service.description
+                        .toLowerCase()
+                        .includes(search) ||
+
+                    service.category
+                        .toLowerCase()
+                        .includes(search);
 
 
-            const matchesStatus =
-                status === "all" ||
-                (status === "active" && service.active) ||
-                (status === "inactive" && !service.active);
+                const matchesStatus =
+
+                    status === "all" ||
+
+                    (
+                        status === "active" &&
+                        service.active
+                    ) ||
+
+                    (
+                        status === "inactive" &&
+                        !service.active
+                    );
 
 
-            return matchesSearch && matchesStatus;
-        });
+                return (
+                    matchesSearch &&
+                    matchesStatus
+                );
+
+            }
+        );
+
     }
 
 
@@ -503,7 +868,8 @@
 
         const active =
             state.services.filter(
-                service => service.active
+                service =>
+                    service.active
             ).length;
 
 
@@ -513,27 +879,70 @@
 
         const prices =
             state.services
-                .map(service => Number(service.price))
-                .filter(price =>
-                    Number.isFinite(price) &&
-                    price > 0
+
+                .map(
+                    service =>
+                        Number(
+                            service.price
+                        )
+                )
+
+                .filter(
+                    price =>
+                        Number.isFinite(price) &&
+                        price > 0
                 );
 
 
         const average =
             prices.length
+
                 ? prices.reduce(
-                    (sum, value) => sum + value,
+                    (sum, value) =>
+                        sum + value,
                     0
                 ) / prices.length
+
                 : 0;
 
 
-        $("totalServices").textContent = total;
-        $("activeServices").textContent = active;
-        $("inactiveServices").textContent = inactive;
-        $("averageServicePrice").textContent =
-            formatAveragePrice(average);
+        if ($("totalServices")) {
+
+            $("totalServices")
+                .textContent =
+                total;
+
+        }
+
+
+        if ($("activeServices")) {
+
+            $("activeServices")
+                .textContent =
+                active;
+
+        }
+
+
+        if ($("inactiveServices")) {
+
+            $("inactiveServices")
+                .textContent =
+                inactive;
+
+        }
+
+
+        if ($("averageServicePrice")) {
+
+            $("averageServicePrice")
+                .textContent =
+                formatAveragePrice(
+                    average
+                );
+
+        }
+
     }
 
 
@@ -541,44 +950,82 @@
        SERVICE ICON
     ===================================================== */
 
-    function getServiceIcon(category) {
+    function getServiceIcon(
+        category
+    ) {
 
         const value =
-            String(category || "").toLowerCase();
+            String(
+                category || ""
+            ).toLowerCase();
 
 
-        if (value.includes("design")) {
+        if (
+            value.includes("design")
+        ) {
+
             return "bi-palette-fill";
+
         }
+
 
         if (
             value.includes("development") ||
             value.includes("software")
         ) {
+
             return "bi-code-slash";
+
         }
 
-        if (value.includes("photo")) {
+
+        if (
+            value.includes("photo")
+        ) {
+
             return "bi-camera-fill";
+
         }
 
-        if (value.includes("marketing")) {
+
+        if (
+            value.includes("marketing")
+        ) {
+
             return "bi-megaphone-fill";
+
         }
 
-        if (value.includes("writing")) {
+
+        if (
+            value.includes("writing")
+        ) {
+
             return "bi-pencil-fill";
+
         }
 
-        if (value.includes("business")) {
+
+        if (
+            value.includes("business")
+        ) {
+
             return "bi-building-fill";
+
         }
 
-        if (value.includes("consult")) {
+
+        if (
+            value.includes("consult")
+        ) {
+
             return "bi-chat-square-text-fill";
+
         }
+
 
         return "bi-briefcase-fill";
+
     }
 
 
@@ -586,22 +1033,35 @@
        PRICE LABEL
     ===================================================== */
 
-    function getPricingLabel(service) {
+    function getPricingLabel(
+        service
+    ) {
 
-        switch (service.pricingType) {
+        switch (
+            service.pricingType
+        ) {
 
             case "starting":
+
                 return "Starting from";
 
+
             case "negotiable":
+
                 return "Negotiable";
 
+
             case "contact":
+
                 return "Price on request";
 
+
             default:
+
                 return "Fixed price";
+
         }
+
     }
 
 
@@ -611,10 +1071,14 @@
 
     function renderServices() {
 
-        const grid = $("servicesGrid");
+        const grid =
+            $("servicesGrid");
+
 
         if (!grid) {
+
             return;
+
         }
 
 
@@ -632,175 +1096,258 @@
         const empty =
             $("servicesEmpty");
 
+
         const noResults =
             $("servicesNoResults");
 
 
         if (!state.services.length) {
 
-            grid.classList.add("d-none");
+            grid.classList.add(
+                "d-none"
+            );
 
-            empty.classList.remove("d-none");
-            noResults.classList.add("d-none");
+
+            empty?.classList.remove(
+                "d-none"
+            );
+
+
+            noResults?.classList.add(
+                "d-none"
+            );
+
 
             return;
+
         }
 
 
         if (!services.length) {
 
-            grid.classList.add("d-none");
+            grid.classList.add(
+                "d-none"
+            );
 
-            empty.classList.add("d-none");
-            noResults.classList.remove("d-none");
+
+            empty?.classList.add(
+                "d-none"
+            );
+
+
+            noResults?.classList.remove(
+                "d-none"
+            );
+
 
             return;
+
         }
 
 
-        grid.classList.remove("d-none");
+        grid.classList.remove(
+            "d-none"
+        );
 
-        empty.classList.add("d-none");
-        noResults.classList.add("d-none");
+
+        empty?.classList.add(
+            "d-none"
+        );
+
+
+        noResults?.classList.add(
+            "d-none"
+        );
 
 
         grid.innerHTML =
-            services.map(service => {
+            services
+                .map(
+                    service => {
 
-                const icon =
-                    getServiceIcon(service.category);
-
-
-                const statusClass =
-                    service.active
-                        ? "active"
-                        : "inactive";
+                        const icon =
+                            getServiceIcon(
+                                service.category
+                            );
 
 
-                const statusText =
-                    service.active
-                        ? "Active"
-                        : "Inactive";
+                        const statusClass =
+                            service.active
+                                ? "active"
+                                : "inactive";
 
 
-                const duration =
-                    service.duration
-                        ? `
-                            <span class="service-detail">
-                                <i class="bi bi-clock"></i>
-                                ${escapeHTML(service.duration)}
-                            </span>
-                          `
-                        : "";
+                        const statusText =
+                            service.active
+                                ? "Active"
+                                : "Inactive";
 
 
-                const category =
-                    service.category
-                        ? escapeHTML(service.category)
-                        : "Other";
+                        const duration =
+                            service.duration
+
+                                ? `
+                                    <span class="service-detail">
+                                        <i class="bi bi-clock"></i>
+                                        ${escapeHTML(
+                                            service.duration
+                                        )}
+                                    </span>
+                                  `
+
+                                : "";
 
 
-                return `
-                    <article
-                        class="service-card"
-                        data-service-id="${escapeHTML(service.id)}"
-                    >
+                        const category =
+                            service.category
+                                ? escapeHTML(
+                                    service.category
+                                )
+                                : "Other";
 
-                        <div class="service-card-top">
 
-                            <div class="service-card-icon">
-                                <i class="bi ${icon}"></i>
-                            </div>
+                        return `
 
-                            <span
-                                class="service-status-badge ${statusClass}"
+                            <article
+                                class="service-card"
+                                data-service-id="${escapeHTML(
+                                    service.id
+                                )}"
                             >
-                                <i class="bi bi-circle-fill"></i>
-                                ${statusText}
-                            </span>
 
-                        </div>
+                                <div class="service-card-top">
 
-
-                        <h3>
-                            ${escapeHTML(service.name)}
-                        </h3>
+                                    <div class="service-card-icon">
+                                        <i class="bi ${icon}"></i>
+                                    </div>
 
 
-                        <div class="service-card-category">
-                            ${category}
-                        </div>
+                                    <span
+                                        class="service-status-badge ${statusClass}"
+                                    >
+
+                                        <i class="bi bi-circle-fill"></i>
+
+                                        ${statusText}
+
+                                    </span>
+
+                                </div>
 
 
-                        <p class="service-card-description">
-                            ${escapeHTML(
-                                service.description ||
-                                "No description provided."
-                            )}
-                        </p>
-
-
-                        <div class="service-card-details">
-
-                            <span class="service-detail">
-                                <i class="bi bi-tag-fill"></i>
-                                ${escapeHTML(
-                                    getPricingLabel(service)
-                                )}
-                            </span>
-
-                            ${duration}
-
-                        </div>
-
-
-                        <div class="service-card-price">
-
-                            <div class="service-price-copy">
-
-                                <span>
+                                <h3>
                                     ${escapeHTML(
-                                        getPricingLabel(service)
+                                        service.name
                                     )}
-                                </span>
-
-                                <strong>
-                                    ${formatPrice(service.price)}
-                                </strong>
-
-                            </div>
+                                </h3>
 
 
-                            <div class="service-card-actions">
+                                <div class="service-card-category">
 
-                                <button
-                                    type="button"
-                                    class="service-action-button"
-                                    data-action="edit"
-                                    data-id="${escapeHTML(service.id)}"
-                                    title="Edit service"
-                                >
-                                    <i class="bi bi-pencil"></i>
-                                </button>
+                                    ${category}
+
+                                </div>
 
 
-                                <button
-                                    type="button"
-                                    class="service-action-button delete"
-                                    data-action="delete"
-                                    data-id="${escapeHTML(service.id)}"
-                                    title="Delete service"
-                                >
-                                    <i class="bi bi-trash3"></i>
-                                </button>
+                                <p class="service-card-description">
 
-                            </div>
+                                    ${escapeHTML(
+                                        service.description ||
+                                        "No description provided."
+                                    )}
 
-                        </div>
+                                </p>
 
-                    </article>
-                `;
-            }).join("");
+
+                                <div class="service-card-details">
+
+                                    <span class="service-detail">
+
+                                        <i class="bi bi-tag-fill"></i>
+
+                                        ${escapeHTML(
+                                            getPricingLabel(
+                                                service
+                                            )
+                                        )}
+
+                                    </span>
+
+
+                                    ${duration}
+
+                                </div>
+
+
+                                <div class="service-card-price">
+
+                                    <div class="service-price-copy">
+
+                                        <span>
+
+                                            ${escapeHTML(
+                                                getPricingLabel(
+                                                    service
+                                                )
+                                            )}
+
+                                        </span>
+
+
+                                        <strong>
+
+                                            ${formatPrice(
+                                                service.price
+                                            )}
+
+                                        </strong>
+
+                                    </div>
+
+
+                                    <div class="service-card-actions">
+
+                                        <button
+                                            type="button"
+                                            class="service-action-button"
+                                            data-action="edit"
+                                            data-id="${escapeHTML(
+                                                service.id
+                                            )}"
+                                            title="Edit service"
+                                        >
+
+                                            <i class="bi bi-pencil"></i>
+
+                                        </button>
+
+
+                                        <button
+                                            type="button"
+                                            class="service-action-button delete"
+                                            data-action="delete"
+                                            data-id="${escapeHTML(
+                                                service.id
+                                            )}"
+                                            title="Delete service"
+                                        >
+
+                                            <i class="bi bi-trash3"></i>
+
+                                        </button>
+
+                                    </div>
+
+                                </div>
+
+                            </article>
+
+                        `;
+
+                    }
+                )
+                .join("");
+
     }
 
 
@@ -811,7 +1358,9 @@
     function renderAll() {
 
         renderStats();
+
         renderServices();
+
     }
 
 
@@ -819,22 +1368,51 @@
        MODAL
     ===================================================== */
 
-    function openServiceModal(service = null) {
+    function openServiceModal(
+        service = null
+    ) {
 
         const modal =
             $("serviceModal");
 
 
         if (!modal) {
+
             return;
+
+        }
+
+
+        /*
+         * Editing requires a real UUID.
+         */
+
+        if (
+            service &&
+            !isValidUUID(
+                service.id
+            )
+        ) {
+
+            showAlert(
+                "This service does not have a valid database ID. Please reload the page.",
+                "danger"
+            );
+
+            return;
+
         }
 
 
         state.editingId =
-            service ? service.id : null;
+            service
+                ? service.id
+                : null;
 
 
-        $("serviceModalTitle").textContent =
+        $("serviceModalTitle")
+            .textContent =
+
             service
                 ? "Edit Service"
                 : "Add Service";
@@ -865,19 +1443,25 @@
 
 
         $("servicePricingType").value =
-            service?.pricingType || "fixed";
+            service?.pricingType ||
+            "fixed";
 
 
         $("serviceActive").checked =
             service
-                ? Boolean(service.active)
+                ? Boolean(
+                    service.active
+                )
                 : true;
 
 
         updateDescriptionCount();
 
 
-        modal.classList.add("open");
+        modal.classList.add(
+            "open"
+        );
+
 
         modal.setAttribute(
             "aria-hidden",
@@ -885,12 +1469,20 @@
         );
 
 
-        document.body.style.overflow = "hidden";
+        document.body.style.overflow =
+            "hidden";
 
 
-        window.setTimeout(() => {
-            $("serviceName")?.focus();
-        }, 100);
+        window.setTimeout(
+            () => {
+
+                $("serviceName")
+                    ?.focus();
+
+            },
+            100
+        );
+
     }
 
 
@@ -901,11 +1493,16 @@
 
 
         if (!modal) {
+
             return;
+
         }
 
 
-        modal.classList.remove("open");
+        modal.classList.remove(
+            "open"
+        );
+
 
         modal.setAttribute(
             "aria-hidden",
@@ -913,39 +1510,66 @@
         );
 
 
-        document.body.style.overflow = "";
+        document.body.style.overflow =
+            "";
 
 
-        $("serviceForm")?.reset();
+        $("serviceForm")
+            ?.reset();
 
-        $("serviceId").value = "";
 
-        state.editingId = null;
+        if ($("serviceId")) {
 
-        $("serviceActive").checked = true;
+            $("serviceId").value =
+                "";
+
+        }
+
+
+        state.editingId =
+            null;
+
+
+        if ($("serviceActive")) {
+
+            $("serviceActive").checked =
+                true;
+
+        }
+
 
         updateDescriptionCount();
+
     }
 
 
     /* =====================================================
-       FORM
-    ===================================================== */
+       SAVE SERVICE
+       ===================================================== */
 
-    async function saveService(event) {
+    async function saveService(
+        event
+    ) {
 
         event.preventDefault();
 
 
         const name =
-            $("serviceName").value.trim();
+            $("serviceName")
+                .value
+                .trim();
 
 
         const description =
-            $("serviceDescription").value.trim();
+            $("serviceDescription")
+                .value
+                .trim();
 
 
-        if (!name || !description) {
+        if (
+            !name ||
+            !description
+        ) {
 
             showAlert(
                 "Please enter the service name and description.",
@@ -953,61 +1577,101 @@
             );
 
             return;
+
         }
 
 
-        const existing =
-            state.services.find(
-                service =>
-                    String(service.id) ===
-                    String(state.editingId)
-            );
-
+        /*
+         * IMPORTANT:
+         *
+         * Only send fields that exist
+         * in the real Supabase table.
+         *
+         * services:
+         *
+         * id
+         * user_id
+         * name
+         * category
+         * description
+         * price
+         * price_type
+         * duration
+         * active
+         * created_at
+         * updated_at
+         * image
+         */
 
         const serviceData = {
 
             name,
 
             category:
-                $("serviceCategory").value ||
+                $("serviceCategory")
+                    .value ||
                 "Other",
 
             description,
 
             price:
                 Number(
-                    $("servicePrice").value
+                    $("servicePrice")
+                        .value
                 ) || 0,
 
-            currency: "NGN",
-
-            pricingType:
-                $("servicePricingType").value ||
+            price_type:
+                $("servicePricingType")
+                    .value ||
                 "fixed",
 
             duration:
-                $("serviceDuration").value.trim(),
+                $("serviceDuration")
+                    .value
+                    .trim(),
 
             active:
-                $("serviceActive").checked,
+                $("serviceActive")
+                    .checked
 
-            updatedAt:
-                new Date().toISOString()
         };
 
 
         try {
 
-            /*
-             * Backend-ready.
-             * When CRUD endpoints exist, they are used.
-             */
+            /* =================================================
+               UPDATE
+            ================================================= */
 
             if (
-                state.editingId &&
-                window.ServiceHubAPI &&
-                typeof ServiceHubAPI.updateService === "function"
+                state.editingId
             ) {
+
+                if (
+                    !isValidUUID(
+                        state.editingId
+                    )
+                ) {
+
+                    throw new Error(
+                        "Invalid service ID. Please reload the Services page."
+                    );
+
+                }
+
+
+                if (
+                    !window.ServiceHubAPI ||
+                    typeof ServiceHubAPI.updateService !==
+                        "function"
+                ) {
+
+                    throw new Error(
+                        "Service update API is not available."
+                    );
+
+                }
+
 
                 const response =
                     await ServiceHubAPI.updateService(
@@ -1016,74 +1680,122 @@
                     );
 
 
+                const rawUpdated =
+                    unwrapData(
+                        response
+                    );
+
+
                 const updated =
                     normalizeService(
-                        unwrapData(response)
+                        rawUpdated
                     );
+
+
+                if (
+                    !isValidUUID(
+                        updated.id
+                    )
+                ) {
+
+                    throw new Error(
+                        "The backend did not return a valid service ID."
+                    );
+
+                }
 
 
                 const index =
                     state.services.findIndex(
                         service =>
-                            String(service.id) ===
-                            String(state.editingId)
+                            String(
+                                service.id
+                            ) ===
+                            String(
+                                state.editingId
+                            )
                     );
 
 
                 if (index !== -1) {
-                    state.services[index] = updated;
+
+                    state.services[index] =
+                        updated;
+
                 }
+
+
+                closeServiceModal();
+
+                renderAll();
+
+
+                showAlert(
+                    "Service updated successfully."
+                );
+
+
+                return;
 
             }
 
-            else if (
-                !state.editingId &&
-                window.ServiceHubAPI &&
-                typeof ServiceHubAPI.createService === "function"
+
+            /* =================================================
+               CREATE
+            ================================================= */
+
+            if (
+                !window.ServiceHubAPI ||
+                typeof ServiceHubAPI.createService !==
+                    "function"
             ) {
 
-                const response =
-                    await ServiceHubAPI.createService(
-                        serviceData
-                    );
-
-
-                state.services.unshift(
-                    normalizeService(
-                        unwrapData(response)
-                    )
+                throw new Error(
+                    "Service creation API is not available."
                 );
 
             }
 
-            else {
 
-                /*
-                 * Frontend-only mode while backend CRUD
-                 * endpoints are not available.
-                 */
+            const response =
+                await ServiceHubAPI.createService(
+                    serviceData
+                );
 
-                if (state.editingId && existing) {
 
-                    Object.assign(
-                        existing,
-                        serviceData
-                    );
+            const rawCreated =
+                unwrapData(
+                    response
+                );
 
-                } else {
 
-                    state.services.unshift(
-                        normalizeService({
-                            ...serviceData,
-                            id:
-                                "local-service-" +
-                                Date.now(),
-                            createdAt:
-                                new Date().toISOString()
-                        })
-                    );
-                }
+            const created =
+                normalizeService(
+                    rawCreated
+                );
+
+
+            /*
+             * Supabase must generate
+             * a real UUID.
+             */
+
+            if (
+                !isValidUUID(
+                    created.id
+                )
+            ) {
+
+                throw new Error(
+                    "The backend did not return a valid service ID. Make sure the real ServiceHub backend is enabled."
+                );
+
             }
+
+
+            state.services.unshift(
+                created
+            );
 
 
             closeServiceModal();
@@ -1092,13 +1804,12 @@
 
 
             showAlert(
-                state.editingId
-                    ? "Service updated successfully."
-                    : "Service added successfully."
+                "Service added successfully."
             );
 
+        }
 
-        } catch (error) {
+        catch (error) {
 
             console.error(
                 "ServiceHub Services: save error",
@@ -1107,28 +1818,52 @@
 
 
             showAlert(
+                error?.message ||
                 "Unable to save this service.",
                 "danger"
             );
+
         }
+
     }
 
 
     /* =====================================================
        DELETE
-    ===================================================== */
+       ===================================================== */
 
-    async function deleteService(id) {
+    async function deleteService(
+        id
+    ) {
+
+        if (
+            !isValidUUID(id)
+        ) {
+
+            showAlert(
+                "Invalid service ID. Please reload the Services page.",
+                "danger"
+            );
+
+            return;
+
+        }
+
 
         const service =
             state.services.find(
                 item =>
-                    String(item.id) === String(id)
+                    String(
+                        item.id
+                    ) ===
+                    String(id)
             );
 
 
         if (!service) {
+
             return;
+
         }
 
 
@@ -1139,25 +1874,39 @@
 
 
         if (!confirmed) {
+
             return;
+
         }
 
 
         try {
 
             if (
-                window.ServiceHubAPI &&
-                typeof ServiceHubAPI.deleteService === "function"
+                !window.ServiceHubAPI ||
+                typeof ServiceHubAPI.deleteService !==
+                    "function"
             ) {
 
-                await ServiceHubAPI.deleteService(id);
+                throw new Error(
+                    "Service delete API is not available."
+                );
+
             }
+
+
+            await ServiceHubAPI.deleteService(
+                id
+            );
 
 
             state.services =
                 state.services.filter(
                     item =>
-                        String(item.id) !== String(id)
+                        String(
+                            item.id
+                        ) !==
+                        String(id)
                 );
 
 
@@ -1168,8 +1917,9 @@
                 "Service deleted successfully."
             );
 
+        }
 
-        } catch (error) {
+        catch (error) {
 
             console.error(
                 "ServiceHub Services: delete error",
@@ -1178,10 +1928,13 @@
 
 
             showAlert(
+                error?.message ||
                 "Unable to delete this service.",
                 "danger"
             );
+
         }
+
     }
 
 
@@ -1194,17 +1947,24 @@
         const textarea =
             $("serviceDescription");
 
+
         const counter =
             $("serviceDescriptionCount");
 
 
-        if (!textarea || !counter) {
+        if (
+            !textarea ||
+            !counter
+        ) {
+
             return;
+
         }
 
 
         counter.textContent =
             textarea.value.length;
+
     }
 
 
@@ -1217,12 +1977,20 @@
         const sidebar =
             $("dashboardSidebar");
 
+
         const overlay =
             $("sidebarOverlay");
 
 
-        sidebar?.classList.add("open");
-        overlay?.classList.add("show");
+        sidebar?.classList.add(
+            "open"
+        );
+
+
+        overlay?.classList.add(
+            "show"
+        );
+
     }
 
 
@@ -1231,12 +1999,20 @@
         const sidebar =
             $("dashboardSidebar");
 
+
         const overlay =
             $("sidebarOverlay");
 
 
-        sidebar?.classList.remove("open");
-        overlay?.classList.remove("show");
+        sidebar?.classList.remove(
+            "open"
+        );
+
+
+        overlay?.classList.remove(
+            "show"
+        );
+
     }
 
 
@@ -1250,7 +2026,8 @@
 
             if (
                 window.ServiceHubAPI &&
-                typeof ServiceHubAPI.logout === "function"
+                typeof ServiceHubAPI.logout ===
+                    "function"
             ) {
 
                 await ServiceHubAPI.logout();
@@ -1259,7 +2036,8 @@
 
             else if (
                 window.ServiceHubAuth &&
-                typeof ServiceHubAuth.logout === "function"
+                typeof ServiceHubAuth.logout ===
+                    "function"
             ) {
 
                 await ServiceHubAuth.logout();
@@ -1268,25 +2046,32 @@
 
             else if (
                 window.ServiceHubApp &&
-                typeof ServiceHubApp.logout === "function"
+                typeof ServiceHubApp.logout ===
+                    "function"
             ) {
 
                 await ServiceHubApp.logout();
 
             }
 
-        } catch (error) {
+        }
+
+        catch (error) {
 
             console.error(
                 "ServiceHub logout error",
                 error
             );
 
-        } finally {
+        }
+
+        finally {
 
             window.location.href =
                 "./login.html";
+
         }
+
     }
 
 
@@ -1299,14 +2084,16 @@
         $("addServiceButton")
             ?.addEventListener(
                 "click",
-                () => openServiceModal()
+                () =>
+                    openServiceModal()
             );
 
 
         $("emptyAddServiceButton")
             ?.addEventListener(
                 "click",
-                () => openServiceModal()
+                () =>
+                    openServiceModal()
             );
 
 
@@ -1325,7 +2112,9 @@
 
 
         $("serviceModal")
-            ?.querySelector(".service-modal-backdrop")
+            ?.querySelector(
+                ".service-modal-backdrop"
+            )
             ?.addEventListener(
                 "click",
                 closeServiceModal
@@ -1372,7 +2161,9 @@
 
 
                     if (!button) {
+
                         return;
+
                     }
 
 
@@ -1384,25 +2175,41 @@
                         button.dataset.id;
 
 
-                    if (action === "edit") {
+                    if (
+                        action === "edit"
+                    ) {
 
                         const service =
                             state.services.find(
                                 item =>
-                                    String(item.id) ===
+                                    String(
+                                        item.id
+                                    ) ===
                                     String(id)
                             );
 
 
                         if (service) {
-                            openServiceModal(service);
+
+                            openServiceModal(
+                                service
+                            );
+
                         }
+
                     }
 
 
-                    if (action === "delete") {
-                        deleteService(id);
+                    if (
+                        action === "delete"
+                    ) {
+
+                        deleteService(
+                            id
+                        );
+
                     }
+
                 }
             );
 
@@ -1441,13 +2248,18 @@
 
                 if (
                     event.key === "Escape" &&
-                    $("serviceModal")?.classList.contains("open")
+                    $("serviceModal")
+                        ?.classList
+                        .contains("open")
                 ) {
 
                     closeServiceModal();
+
                 }
+
             }
         );
+
     }
 
 
@@ -1462,7 +2274,9 @@
 
 
         if (!authenticated) {
+
             return;
+
         }
 
 
@@ -1472,9 +2286,11 @@
 
         await loadServices();
 
+
         console.log(
             "ServiceHub Services page loaded successfully."
         );
+
     }
 
 
@@ -1484,16 +2300,31 @@
     );
 
 
+    /* =====================================================
+       PUBLIC API
+    ===================================================== */
+
     window.ServiceHubServices = {
-        reload: loadServices,
 
-        getState: function () {
-            return state;
-        },
+        reload:
+            loadServices,
 
-        openModal: openServiceModal,
 
-        closeModal: closeServiceModal
+        getState:
+            function () {
+
+                return state;
+
+            },
+
+
+        openModal:
+            openServiceModal,
+
+
+        closeModal:
+            closeServiceModal
+
     };
 
 })();

@@ -1337,6 +1337,13 @@ function renderServices(
    WORK
 ========================================================= */
 
+
+/* =========================================================
+   WORK
+   PUBLIC PROFILE
+   SUPPORTS IMAGES + VIDEOS
+========================================================= */
+
 function renderWork(
     workItems
 ) {
@@ -1345,28 +1352,21 @@ function renderWork(
         $("workList");
 
     if (!container) {
-
         return;
-
     }
-
 
     if (
         !Array.isArray(workItems) ||
         workItems.length === 0
     ) {
-
         container.innerHTML = `
             <div class="dashboard-empty">
                 <i class="bi bi-images"></i>
                 <p>No completed work has been added yet.</p>
             </div>
         `;
-
         return;
-
     }
-
 
     container.innerHTML =
         workItems.map(
@@ -1376,18 +1376,79 @@ function renderWork(
                     item.title ||
                     "Completed Work";
 
-
                 const description =
                     item.description ||
                     "";
-
 
                 const image =
                     item.image ||
                     item.image_url ||
                     "";
 
+                /*
+                 * IMPORTANT:
+                 * Your database uses "video" singular.
+                 *
+                 * "videos" is kept only as a fallback
+                 * in case an older response still uses it.
+                 */
+                const video =
+                    item.video ||
+                    item.videos ||
+                    "";
 
+                /*
+                 * Video is displayed directly so the
+                 * public visitor can play it.
+                 */
+                if (video) {
+
+                    return `
+                        <article
+                            class="profile-work-item"
+                            data-work-index="${index}"
+                        >
+
+                            <div class="profile-work-image">
+
+                                <video
+                                    class="work-card-media"
+                                    src="${escapeHTML(video)}"
+                                    controls
+                                    playsinline
+                                    preload="metadata"
+                                ></video>
+
+                            </div>
+
+                            <div class="profile-work-content">
+
+                                <h4>
+                                    ${escapeHTML(title)}
+                                </h4>
+
+                                ${
+                                    description
+                                        ? `
+                                            <p>
+                                                ${escapeHTML(
+                                                    description
+                                                )}
+                                            </p>
+                                        `
+                                        : ""
+                                }
+
+                            </div>
+
+                        </article>
+                    `;
+                }
+
+                /*
+                 * If there is no video, continue using
+                 * the existing image behaviour.
+                 */
                 return `
                     <article
                         class="profile-work-item"
@@ -1408,15 +1469,19 @@ function renderWork(
                             image
                                 ? `
                                     <div class="profile-work-image">
+
                                         <img
                                             src="${escapeHTML(image)}"
                                             alt="${escapeHTML(title)}"
                                         >
+
                                     </div>
                                 `
                                 : `
                                     <div class="profile-work-image profile-work-placeholder">
+
                                         <i class="bi bi-image"></i>
+
                                     </div>
                                 `
                         }
@@ -1443,18 +1508,15 @@ function renderWork(
 
                     </article>
                 `;
-
             }
         ).join("");
 
-
     setupWorkPreview();
-
 }
 
 
 /* =========================================================
-   WORK PREVIEW
+   WORK IMAGE PREVIEW
 ========================================================= */
 
 function setupWorkPreview() {
@@ -1471,25 +1533,41 @@ function setupWorkPreview() {
                         item.dataset.workIndex
                     );
 
-
                 const work =
                     ProfileState
                         .relatedData
                         .work[index];
 
-
-                if (
-                    !work ||
-                    !(
-                        work.image ||
-                        work.image_url
-                    )
-                ) {
-
+                if (!work) {
                     return;
-
                 }
 
+                /*
+                 * Videos already have their own controls,
+                 * so do not turn the video card into an
+                 * image-preview button.
+                 */
+                const video =
+                    work.video ||
+                    work.videos ||
+                    "";
+
+                if (video) {
+                    return;
+                }
+
+                /*
+                 * Only image work should open the
+                 * existing image preview modal.
+                 */
+                const image =
+                    work.image ||
+                    work.image_url ||
+                    "";
+
+                if (!image) {
+                    return;
+                }
 
                 item.addEventListener(
                     "click",
@@ -1501,7 +1579,6 @@ function setupWorkPreview() {
 
                     }
                 );
-
 
                 item.addEventListener(
                     "keydown",
@@ -1523,12 +1600,11 @@ function setupWorkPreview() {
 
             }
         );
-
 }
 
 
 /* =========================================================
-   IMAGE PREVIEW
+   IMAGE PREVIEW MODAL
 ========================================================= */
 
 function openImagePreview(
@@ -1544,7 +1620,6 @@ function openImagePreview(
     const description =
         $("imagePreviewDescription");
 
-
     if (image) {
 
         image.src =
@@ -1554,13 +1629,11 @@ function openImagePreview(
 
     }
 
-
     setText(
         "imagePreviewTitle",
         work.title ||
         "Work Preview"
     );
-
 
     setText(
         "imagePreviewDescription",
@@ -1568,10 +1641,8 @@ function openImagePreview(
         ""
     );
 
-
     const modalElement =
         $("imagePreviewModal");
-
 
     if (
         modalElement &&
@@ -1586,8 +1657,9 @@ function openImagePreview(
             .show();
 
     }
-
 }
+
+
 
 
 /* =========================================================
