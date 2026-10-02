@@ -31,7 +31,7 @@
      */
 
     const API_BASE_URL =
-        "http://localhost:7000/api";
+    "https://service-platform-backend-lktg.onrender.com/api";
 
 
     /* =====================================================

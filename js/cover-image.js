@@ -8,7 +8,7 @@
 
 console.log("SERVICEHUB COVER IMAGE JS LOADED");
 
-const COVER_API_BASE_URL = "http://localhost:7000/api";
+const COVER_API_BASE_URL = "https://service-platform-backend-lktg.onrender.com/api";
 
 const COVER_MAX_FILE_SIZE = 5 * 1024 * 1024;
 
