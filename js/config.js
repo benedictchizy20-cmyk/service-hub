@@ -2,7 +2,7 @@
 
 /* =========================================================
    SERVICEHUB CONFIGURATION
-   FRONTEND DEVELOPMENT MODE
+   PRODUCTION / VERCEL + RENDER
    ========================================================= */
 
 const APP_CONFIG = {
@@ -10,32 +10,45 @@ const APP_CONFIG = {
     APP_NAME: "ServiceHub",
     APP_VERSION: "1.0.0",
 
-    ENVIRONMENT: "development",
+    ENVIRONMENT: "production",
 
     /*
        TRUE = use frontend development/mock data
-       FALSE = connect to real backend
+       FALSE = connect to the real Render backend
     */
-    USE_MOCK_BACKEND:false ,
+    USE_MOCK_BACKEND: false,
 
     /*
-       Real backend - we will use this later
+       LIVE SERVICEHUB BACKEND
     */
-    API_BASE_URL: "http://localhost:7000/api",
+    API_BASE_URL:
+        "https://service-platform-backend-lktg.onrender.com/api",
 
-    FRONTEND_URL: "http://localhost:5500",
+    /*
+       FRONTEND WILL BE HOSTED ON VERCEL
+       We will replace this with the actual Vercel URL
+       after deployment.
+    */
+    FRONTEND_URL:
+        "http://localhost:5500",
 
-    AUTH_COOKIE_NAME: "servicehub_access_token",
+    AUTH_COOKIE_NAME:
+        "servicehub_access_token",
 
-    USER_STORAGE_KEY: "servicehub_user",
+    USER_STORAGE_KEY:
+        "servicehub_user",
 
-    DEV_SESSION_KEY: "servicehub_dev_session",
+    DEV_SESSION_KEY:
+        "servicehub_dev_session",
 
-    DEV_USERS_KEY: "servicehub_dev_users",
+    DEV_USERS_KEY:
+        "servicehub_dev_users",
 
-    DEV_DATA_KEY: "servicehub_dev_data",
+    DEV_DATA_KEY:
+        "servicehub_dev_data",
 
-    PUBLIC_PROFILE_PATH: "/profile.html?username=",
+    PUBLIC_PROFILE_PATH:
+        "/profile.html?username=",
 
     MAX_IMAGE_SIZE_MB: 10,
 
@@ -46,7 +59,13 @@ const APP_CONFIG = {
     DEBUG: true
 };
 
+
+/* =========================================================
+   DEBUG
+========================================================= */
+
 if (APP_CONFIG.DEBUG) {
+
     console.log(
         `${APP_CONFIG.APP_NAME} config loaded successfully.`
     );
@@ -65,4 +84,5 @@ if (APP_CONFIG.DEBUG) {
         "API:",
         APP_CONFIG.API_BASE_URL
     );
+
 }
