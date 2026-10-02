@@ -30,7 +30,7 @@ const APP_CONFIG = {
        after deployment.
     */
     FRONTEND_URL:
-        "http://localhost:5500",
+         "https://service-hub-lilac-ten.vercel.app",
 
     AUTH_COOKIE_NAME:
         "servicehub_access_token",
