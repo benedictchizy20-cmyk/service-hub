@@ -413,11 +413,11 @@ async function loadProfile() {
             }
 
 
-            const response =
-                await ServiceHubAPI
-                    .getPublicDevUserData(
-                        ProfileState.username
-                    );
+           const response =
+    await ServiceHubAPI
+        .getProfile(
+            ProfileState.username
+        );
 
 
             if (!response) {
