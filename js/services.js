@@ -3,7 +3,7 @@
    REAL BACKEND / SUPABASE READY
    ========================================================= */
 
-// (function () {
+(function () {
 
     "use strict";
 
